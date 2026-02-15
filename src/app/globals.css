@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+:root {
+  --primary: #6cad89;
+  --accent: #a7bfa4;
+  --bg-soft: #f5ebe0;
+  --bg: #e2d6c7;
+  --text: #1f1f1f;
+  --text-muted: #555555;
+
+  --font: "Montserrat", sans-serif;
+}
+
+body {
+  font-family: var(--font);
+}
+
+html {
+  scroll-behavior: smooth;
+}
