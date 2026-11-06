@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Services from "@/components/Services";
+import Resources from "@/components/Resources";
 import Contact from "@/components/Contact";
 import { seo } from "@/config/content";
 
@@ -17,6 +18,7 @@ export default function Home() {
       <Hero />
       <About />
       <Services />
+      <Resources />
       <Contact />
     </>
   );

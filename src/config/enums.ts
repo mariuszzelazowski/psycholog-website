@@ -3,6 +3,7 @@ export enum AppSection {
   Hero = "hero",
   About = "about",
   Services = "services",
+  Resources = "resources",
   Contact = "contact",
 }
 
@@ -23,6 +24,7 @@ export enum ServiceDelivery {
 export enum NavItem {
   About = "about",
   Services = "services",
+  Resources = "resources",
   Contact = "contact",
 }
 

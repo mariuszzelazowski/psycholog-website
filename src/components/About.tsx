@@ -40,6 +40,7 @@ export default function About() {
               slides={aboutSlides}
               intervalMs={5600}
               frameClassName="aspect-square min-h-[240px] max-h-[min(88vw,400px)] sm:max-h-none sm:min-h-0"
+              photoFrameClassName="aspect-[5/6] min-h-[240px] max-h-[min(88vw,420px)] sm:max-h-none sm:min-h-0"
             />
           </Reveal>
 

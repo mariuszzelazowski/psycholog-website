@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import type { GallerySlide } from "@/config/gallery";
 import { slideCrossfade } from "@/lib/motion";
 
@@ -9,6 +9,8 @@ type MediaCarouselProps = {
   slides: readonly GallerySlide[];
   intervalMs?: number;
   frameClassName?: string;
+  /** Nadpisanie proporcji ramki (np. Hero szerszy, mniej agresywne przycinanie portretów). */
+  photoFrameClassName?: string;
 };
 
 function CarouselChevron({ direction }: { direction: "prev" | "next" }) {
@@ -36,6 +38,7 @@ export default function MediaCarousel({
   slides,
   intervalMs = 5200,
   frameClassName = "aspect-[4/5] min-h-[240px] max-h-[min(72vh,520px)] sm:max-h-none sm:min-h-0",
+  photoFrameClassName,
 }: MediaCarouselProps) {
   const [index, setIndex] = useState(0);
   const slide = slides[index];
@@ -53,10 +56,34 @@ export default function MediaCarousel({
 
   if (!slide) return null;
 
+  const isPhoto = Boolean(slide.isPhoto);
+  const tone = slide.mottoTone ?? "neutral";
+  const mottoToneClass =
+    tone === "green"
+      ? "carousel-motto-text--green"
+      : tone === "burgundy"
+        ? "carousel-motto-text--burgundy"
+        : "carousel-motto-text--neutral";
+
+  const photoClassName = [
+    "carousel-slide-photo absolute inset-0 m-auto h-full w-full object-cover",
+    slide.photoEaseCrop ? "carousel-slide-photo--ease" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const photoStyle: CSSProperties | undefined = isPhoto
+    ? { objectPosition: slide.photoObjectPosition ?? "center center" }
+    : undefined;
+
+  const frameClasses = isPhoto && photoFrameClassName
+    ? photoFrameClassName
+    : frameClassName;
+
   return (
     <div className="card-glass card-interactive relative p-1 sm:p-1.5">
       <div
-        className={`relative w-full overflow-hidden rounded-[1.25rem] bg-bg ${frameClassName}`}
+        className={`relative w-full overflow-hidden rounded-[1.25rem] bg-bg ${frameClasses}`}
       >
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
@@ -66,18 +93,30 @@ export default function MediaCarousel({
             animate={slideCrossfade.animate}
             exit={slideCrossfade.exit}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element -- lokalne SVG, pełna kontrola kadru */}
+            {/* eslint-disable-next-line @next/next/no-img-element -- lokalne pliki graficzne */}
             <img
               src={slide.src}
               alt={slide.alt}
               decoding="async"
               draggable={false}
-              className="absolute inset-0 m-auto h-full w-full object-contain p-2 pb-0 sm:p-4 sm:pb-0"
+              style={photoStyle}
+              className={
+                isPhoto
+                  ? photoClassName
+                  : "absolute inset-0 m-auto h-full w-full object-contain p-2 pb-0 sm:p-4 sm:pb-0"
+              }
             />
           </motion.div>
         </AnimatePresence>
 
-        <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-primary-dark/40 via-primary-dark/5 to-transparent z-10" />
+        <div
+          className={
+            isPhoto
+              ? "pointer-events-none absolute inset-0 carousel-slide-scrim-photo z-10"
+              : "pointer-events-none absolute inset-0 carousel-slide-scrim-svg z-10"
+          }
+          aria-hidden
+        />
 
         <AnimatePresence mode="wait">
           <motion.figure
@@ -89,7 +128,7 @@ export default function MediaCarousel({
             className="carousel-motto z-20"
             aria-live="polite"
           >
-            <blockquote className="carousel-motto-text">
+            <blockquote className={`carousel-motto-text ${mottoToneClass}`}>
               {`„${slide.motto}"`}
             </blockquote>
           </motion.figure>

@@ -184,6 +184,26 @@
     }
   }
 
+  /** Hero: mniejszy odstęp pod nav (mobile — panel ze zdjęciami bliżej paska). */
+  .section-padding-hero {
+    padding-top: 1.35rem;
+    padding-bottom: 2.75rem;
+  }
+
+  @media (min-width: 640px) {
+    .section-padding-hero {
+      padding-top: 1.65rem;
+      padding-bottom: 3.25rem;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .section-padding-hero {
+      padding-top: 2.15rem;
+      padding-bottom: 4rem;
+    }
+  }
+
   .section-stack {
     display: flex;
     flex-direction: column;
@@ -756,6 +776,41 @@
     transform: scale(0.96);
   }
 
+  /* Zdjęcia w karuzeli — lekki, ciepły filtr (bez przesady) */
+  .carousel-slide-photo {
+    filter: saturate(1.04) contrast(0.97) brightness(1.02);
+  }
+
+  .carousel-slide-photo--ease {
+    transform: scale(1.04);
+    transform-origin: center center;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .carousel-slide-photo {
+      transition: filter 0.6s ease;
+    }
+  }
+
+  .carousel-slide-scrim-svg {
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgb(248 246 243 / 0.04) 45%,
+      rgb(47 61 78 / 0.22) 100%
+    );
+  }
+
+  .carousel-slide-scrim-photo {
+    background: linear-gradient(
+      180deg,
+      transparent 0%,
+      rgb(45 58 48 / 0.06) 38%,
+      rgb(74 48 52 / 0.14) 72%,
+      rgb(47 61 78 / 0.28) 100%
+    );
+  }
+
   .carousel-motto {
     position: absolute;
     left: 0;
@@ -782,16 +837,48 @@
     text-wrap: balance;
     font-style: italic;
     font-weight: 500;
-    color: var(--bg-soft);
-    text-shadow: 0 1px 12px rgb(26 32 39 / 0.35);
+    border: 1px solid rgb(255 255 255 / 0.22);
+    backdrop-filter: blur(12px);
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.12) inset,
+      0 14px 32px -18px rgb(26 32 39 / 0.35);
+  }
+
+  /* Ciepłe, delikatne tła pod fotografie (zieleń / bordo gabinetu) */
+  .carousel-motto-text--neutral {
+    color: rgb(252 250 246);
+    text-shadow: 0 1px 10px rgb(45 55 62 / 0.28);
     background: linear-gradient(
-      180deg,
-      rgb(47 61 78 / 0.55),
-      rgb(47 61 78 / 0.78)
+      145deg,
+      rgb(62 76 70 / 0.42) 0%,
+      rgb(74 52 56 / 0.38) 48%,
+      rgb(47 61 78 / 0.52) 100%
     );
-    border: 1px solid rgb(255 255 255 / 0.12);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 12px 28px -16px rgb(26 32 39 / 0.45);
+    border-color: rgb(255 255 255 / 0.18);
+  }
+
+  .carousel-motto-text--green {
+    color: rgb(250 248 242);
+    text-shadow: 0 1px 8px rgb(42 58 48 / 0.3);
+    background: linear-gradient(
+      145deg,
+      rgb(52 72 58 / 0.38) 0%,
+      rgb(58 68 62 / 0.44) 45%,
+      rgb(47 61 78 / 0.4) 100%
+    );
+    border-color: rgb(212 228 210 / 0.25);
+  }
+
+  .carousel-motto-text--burgundy {
+    color: rgb(252 247 244);
+    text-shadow: 0 1px 8px rgb(58 40 44 / 0.32);
+    background: linear-gradient(
+      145deg,
+      rgb(88 48 54 / 0.36) 0%,
+      rgb(72 52 56 / 0.42) 50%,
+      rgb(47 61 78 / 0.45) 100%
+    );
+    border-color: rgb(232 210 205 / 0.28);
   }
 
   @media (min-width: 640px) {

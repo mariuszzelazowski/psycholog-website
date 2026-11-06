@@ -108,6 +108,12 @@ export const navigation = [
     isCTA: false,
   },
   {
+    id: NavItem.Resources,
+    label: "Przydatne materiały",
+    section: AppSection.Resources,
+    isCTA: false,
+  },
+  {
     id: NavItem.Contact,
     label: "Spotkajmy się",
     section: AppSection.Contact,
@@ -121,7 +127,7 @@ export const hero = {
   title: "Konsultacje psychologiczne",
   titleAccent: "Sesje hipnoterapii",
   lead:
-    "[[Bezpieczna przestrzeń]] do rozmowy, zrozumienia i **realnej zmiany** — stacjonarnie w **Warszawie** lub [[online]].",
+    "[[Bezpieczna przestrzeń]] do rozmowy, zrozumienia i **realnej zmiany** — stacjonarnie w **Warszawie** lub [[online]]. **Ode mnie dla Ciebie** — w [[przydatnych materiałach]] czeka **darmowy Dziennik Regeneracji** do pobrania.",
   ctaPrimary: { label: "Spotkajmy się", section: AppSection.Contact },
   ctaSecondary: { label: "Sprawdź zakres wsparcia", section: AppSection.Services },
 } as const;
@@ -159,6 +165,25 @@ export const about = {
 export const servicesSection = {
   sectionLabel: "Oferta",
   title: "Zakres wsparcia",
+} as const;
+
+/** Sekcja materiały do pobrania */
+export const resourcesSection = {
+  sectionLabel: "Dla Ciebie",
+  title: "Przydatne materiały",
+  lead:
+    "Mały **prezent** od serca — narzędzie, które możesz zabrać ze sobą i wracać do niego we własnym tempie.",
+} as const;
+
+/** Bezpłatny materiał (link zewnętrzny) */
+export const resourcesGift = {
+  id: "dziennik-regeneracji",
+  badge: "Prezent · PDF · do pobrania",
+  title: "Dziennik Regeneracji",
+  description:
+    "Darmowy dziennik do świadomego odpoczywania i budowania [[odnowy]] — krótkie zapiski i pytania, które pomagają **złapać balans** po intensywnych dniach.",
+  ctaLabel: "Pobierz Dziennik Regeneracji",
+  href: "https://bit.ly/dziennikregeneracji",
 } as const;
 
 /** Sekcja kontakt — copy */

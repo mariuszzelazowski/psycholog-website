@@ -10,7 +10,7 @@ export default function Hero() {
   return (
     <section
       id={AppSection.Hero}
-      className="relative section-padding scroll-mt-header overflow-hidden bg-bg-soft"
+      className="relative section-padding-hero scroll-mt-header overflow-hidden bg-bg-soft"
       aria-label="Wprowadzenie"
     >
       <div className="ambient-orb ambient-orb-a pointer-events-none" aria-hidden />
@@ -75,7 +75,11 @@ export default function Hero() {
           transition={{ ...motionTransition, delay: 0.12 }}
           className="order-1 md:order-2 relative mx-auto w-full max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl"
         >
-          <MediaCarousel slides={heroSlides} intervalMs={5200} />
+          <MediaCarousel
+            slides={heroSlides}
+            intervalMs={5200}
+            photoFrameClassName="aspect-[3/4] sm:aspect-[5/6] min-h-[240px] max-h-[min(72vh,540px)] sm:max-h-none sm:min-h-0"
+          />
         </motion.div>
       </div>
     </section>
