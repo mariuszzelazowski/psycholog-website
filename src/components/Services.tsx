@@ -67,6 +67,7 @@ export default function Services() {
                 key={item}
                 variants={staggerItem}
                 className="challenge-chip"
+                style={{ "--chip-chars": item.length } as React.CSSProperties}
               >
                 {item}
               </motion.li>

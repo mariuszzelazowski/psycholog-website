@@ -85,7 +85,7 @@ export default function MediaCarousel({
     : frameClassName;
 
   return (
-    <div className="card-glass card-interactive relative p-1 sm:p-1.5">
+    <div className="card-glass relative p-1 sm:p-1.5">
       <div
         className={`relative w-full overflow-hidden rounded-[1.25rem] bg-bg ${frameClasses}`}
       >
