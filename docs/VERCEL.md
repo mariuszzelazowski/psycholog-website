@@ -14,7 +14,7 @@ Własną domenę możesz podpiąć później (Vercel → Domains).
 ## Krok 1 — Web3Forms (automatyczna wysyłka)
 
 1. Wejdź na [https://web3forms.com](https://web3forms.com)
-2. **Create Access Key** → podaj e-mail odbiorcy (np. `zelazowskimariusz91@gmail.com`)
+2. **Create Access Key** → podaj e-mail odbiorcy (np. `paulinamisztal001@gmail.com`)
 3. Potwierdź link w skrzynce
 4. Skopiuj **Access Key**
 
@@ -22,7 +22,7 @@ Lokalnie (`.env.local`):
 
 ```env
 WEB3FORMS_ACCESS_KEY=twój_klucz
-NEXT_PUBLIC_CONTACT_EMAIL=zelazowskimariusz91@gmail.com
+NEXT_PUBLIC_CONTACT_EMAIL=paulinamisztal001@gmail.com
 ```
 
 Zrestartuj: `npm run fresh` → wyślij test z formularza → sprawdź skrzynkę (i spam).

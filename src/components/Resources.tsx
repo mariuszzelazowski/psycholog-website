@@ -1,11 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import {
-  AppSection,
-  resourcesGift,
-  resourcesSection,
-} from "@/config";
+import { AppSection, resourcesGift, resourcesSection } from "@/config";
 import SectionHeader from "@/components/motion/SectionHeader";
 import RichCopy, { bindOrphans } from "@/lib/rich-copy";
 import { motionTransition, scaleIn, viewportReveal } from "@/lib/motion";
@@ -17,13 +13,15 @@ export default function Resources() {
       className="relative section-padding scroll-mt-header overflow-hidden bg-linear-to-b from-bg/50 via-bg-soft to-bg border-y border-accent/20"
       aria-labelledby="resources-heading"
     >
-      <div className="ambient-orb ambient-orb-b pointer-events-none" aria-hidden />
+      <div
+        className="ambient-orb ambient-orb-b pointer-events-none"
+        aria-hidden
+      />
 
       <div className="container-custom relative section-stack">
         <div className="space-y-3">
           <SectionHeader
             label={resourcesSection.sectionLabel}
-            title={resourcesSection.title}
             titleId="resources-heading"
           />
 
@@ -39,7 +37,7 @@ export default function Resources() {
                 transition: motionTransition,
               },
             }}
-            className="section-lead"
+            className="section-lead section-lead-wide"
           >
             <RichCopy>{resourcesSection.lead}</RichCopy>
           </motion.p>
@@ -66,13 +64,14 @@ export default function Resources() {
 
             <div className="relative flex flex-col items-center gap-3">
               <span className="inline-flex items-center gap-2 rounded-full border border-accent/45 bg-bg-soft/90 px-3.5 py-1 text-[0.65rem] font-bold uppercase tracking-[0.16em] text-primary-dark shadow-sm">
-                <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" aria-hidden />
+                <span
+                  className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse"
+                  aria-hidden
+                />
                 {resourcesGift.badge}
               </span>
 
-              <h3 className="font-display text-2xl sm:text-[1.65rem] font-semibold text-primary-dark text-balance">
-                {bindOrphans(resourcesGift.title)}
-              </h3>
+              <h3 className="card-title">{bindOrphans(resourcesGift.title)}</h3>
 
               <p className="prose-block prose-block-center text-[0.9375rem] md:text-base max-w-md">
                 <RichCopy>{resourcesGift.description}</RichCopy>

@@ -5,15 +5,8 @@ import { about, aboutSlides, AppSection, brand } from "@/config";
 import MediaCarousel from "@/components/motion/MediaCarousel";
 import Reveal from "@/components/motion/Reveal";
 import SectionHeader from "@/components/motion/SectionHeader";
-import AccentMarker from "@/components/ui/AccentMarker";
 import RichCopy, { bindOrphans } from "@/lib/rich-copy";
-import {
-  fadeUp,
-  slideFromLeft,
-  slideFromRight,
-  staggerContainer,
-  staggerItem,
-} from "@/lib/motion";
+import { slideFromLeft, slideFromRight } from "@/lib/motion";
 
 export default function About() {
   return (
@@ -22,14 +15,13 @@ export default function About() {
       className="relative section-padding scroll-mt-header overflow-hidden bg-linear-to-b from-bg-soft to-bg/60 border-b border-accent/20"
       aria-labelledby="about-heading"
     >
-      <div className="ambient-orb ambient-orb-c pointer-events-none" aria-hidden />
+      <div
+        className="ambient-orb ambient-orb-c pointer-events-none"
+        aria-hidden
+      />
 
       <div className="container-custom relative section-stack">
-        <SectionHeader
-          label={about.sectionLabel}
-          title={about.title}
-          titleId="about-heading"
-        />
+        <SectionHeader label={about.sectionLabel} titleId="about-heading" />
 
         <div className="content-grid w-full grid grid-cols-1 gap-8 sm:gap-10 lg:grid-cols-2 xl:gap-12 lg:items-start">
           <Reveal
@@ -44,11 +36,16 @@ export default function About() {
             />
           </Reveal>
 
-          <Reveal variants={slideFromRight} className="space-y-6 text-center lg:text-left">
-            <div className="prose-block prose-block-center-lg-left space-y-4">
+          <Reveal
+            variants={slideFromRight}
+            className="space-y-6 text-center lg:text-left"
+          >
+            <div className="prose-block prose-block-justify space-y-4">
               <p>
                 Nazywam się{" "}
-                <span className="font-bold text-primary-dark">{brand.fullName}</span>
+                <span className="font-bold text-primary-dark">
+                  {brand.fullName}
+                </span>
                 . <RichCopy>{about.introAfterName}</RichCopy>
               </p>
               {about.introParagraphs.map((paragraph) => (
@@ -63,10 +60,10 @@ export default function About() {
               transition={{ type: "spring", stiffness: 320, damping: 22 }}
               className="card-glass card-interactive card-padding card-callout space-y-3"
             >
-              <h3 className="font-display text-lg md:text-xl font-semibold text-primary text-balance">
+              <h3 className="card-title">
                 {bindOrphans(about.experienceTitle)}
               </h3>
-              <div className="prose-block prose-block-center-lg-left space-y-3 text-[0.9375rem] md:text-base">
+              <div className="prose-block prose-block-justify space-y-3 text-[0.9375rem] md:text-base">
                 {about.experienceParagraphs.map((paragraph) => (
                   <p key={paragraph.slice(0, 24)}>
                     <RichCopy>{paragraph}</RichCopy>
@@ -76,37 +73,6 @@ export default function About() {
             </motion.div>
           </Reveal>
         </div>
-
-        <Reveal variants={fadeUp} className="content-narrow w-full space-y-5 pt-2 lg:pt-4">
-          <h3 className="font-display text-xl md:text-2xl font-semibold text-primary text-center text-balance">
-            {bindOrphans(about.challengesTitle)}
-          </h3>
-
-          <motion.ul
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            variants={staggerContainer}
-            className="list-accent list-accent-centered max-w-2xl mx-auto lg:max-w-none"
-          >
-            {about.challenges.map((item) => (
-              <motion.li
-                key={item}
-                variants={staggerItem}
-                className="list-accent-item"
-              >
-                <AccentMarker />
-                <span className="min-w-0">
-                  <RichCopy>{item}</RichCopy>
-                </span>
-              </motion.li>
-            ))}
-          </motion.ul>
-
-          <p className="prose-block prose-block-center text-sm md:text-base max-w-2xl mx-auto">
-            <RichCopy>{about.challengesFooter}</RichCopy>
-          </p>
-        </Reveal>
       </div>
     </section>
   );

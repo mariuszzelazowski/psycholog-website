@@ -26,14 +26,6 @@ export const fadeUp = {
   },
 };
 
-export const fadeIn = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: motionTransitionFast,
-  },
-};
-
 export const slideFromLeft = {
   hidden: { opacity: 0, x: -28 },
   visible: {

@@ -24,7 +24,10 @@ export default function Footer() {
         }}
         className="container-custom text-center space-y-2.5"
       >
-        <motion.p variants={fadeUp} className="text-sm text-text-muted font-medium">
+        <motion.p
+          variants={fadeUp}
+          className="text-sm text-text-muted font-medium"
+        >
           © {new Date().getFullYear()} ·{" "}
           <span className="font-display font-semibold text-primary-dark tracking-wide">
             {brand.fullName}
@@ -33,7 +36,7 @@ export default function Footer() {
 
         <motion.div
           variants={fadeUp}
-          className="flex flex-wrap justify-center gap-1.5"
+          className="flex flex-wrap justify-center gap-1 sm:gap-1.5"
         >
           {footer.keywords.map((keyword) => (
             <span key={keyword} className="footer-keyword">

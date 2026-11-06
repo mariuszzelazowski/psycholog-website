@@ -2,17 +2,23 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { FaFacebookF, FaInstagram } from "react-icons/fa";
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaPhoneAlt,
+  FaRegClock,
+  FaRegEnvelope,
+} from "react-icons/fa";
 import {
   AppSection,
+  ContactDetail,
+  contactHours,
   contactSection,
-  getContactDetails,
-  socialProfiles,
+  getContactActions,
   SocialPlatform,
+  type ContactAction,
 } from "@/config";
 import SectionHeader from "@/components/motion/SectionHeader";
-import Reveal from "@/components/motion/Reveal";
-import RichCopy from "@/lib/rich-copy";
 import {
   validateContact,
   validateContactField,
@@ -23,15 +29,17 @@ import { suggestEmail } from "@/lib/email";
 import { submitContact } from "@/lib/submit-contact";
 import {
   fadeUp,
-  slideFromLeft,
-  slideFromRight,
+  staggerContainer,
+  staggerItem,
   viewportReveal,
 } from "@/lib/motion";
 
-const socialIcons = {
-  [SocialPlatform.Facebook]: FaFacebookF,
+const actionIcons: Record<ContactAction["id"], typeof FaRegEnvelope> = {
+  [ContactDetail.Email]: FaRegEnvelope,
+  [ContactDetail.Phone]: FaPhoneAlt,
   [SocialPlatform.Instagram]: FaInstagram,
-} as const;
+  [SocialPlatform.Facebook]: FaFacebookF,
+};
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -44,9 +52,11 @@ export default function Contact() {
   >("idle");
   const [feedback, setFeedback] = useState("");
   const [errors, setErrors] = useState<ContactErrors>({});
-  const [touched, setTouched] = useState<Partial<Record<ContactField, boolean>>>({});
+  const [touched, setTouched] = useState<
+    Partial<Record<ContactField, boolean>>
+  >({});
 
-  const contactDetails = getContactDetails();
+  const contactActions = getContactActions();
   const emailSuggestion = touched.email ? suggestEmail(formData.email) : null;
 
   const setFieldError = (field: ContactField, value: string) => {
@@ -93,7 +103,10 @@ export default function Contact() {
 
   const fieldError = (field: ContactField) =>
     errors[field] ? (
-      <p id={`contact-${field}-error`} className="text-sm text-red-800 -mt-1.5 text-left">
+      <p
+        id={`contact-${field}-error`}
+        className="text-sm text-red-800 -mt-1.5 text-left"
+      >
         {errors[field]}
       </p>
     ) : null;
@@ -108,7 +121,9 @@ export default function Contact() {
       (field) => nextErrors[field],
     );
     if (firstInvalid) {
-      e.currentTarget.querySelector<HTMLElement>(`#contact-${firstInvalid}`)?.focus();
+      e.currentTarget
+        .querySelector<HTMLElement>(`#contact-${firstInvalid}`)
+        ?.focus();
       return;
     }
 
@@ -135,13 +150,15 @@ export default function Contact() {
     } catch (err) {
       setStatus("error");
       setFeedback(
-        err instanceof Error ? err.message : "Coś poszło nie tak. Spróbuj ponownie.",
+        err instanceof Error
+          ? err.message
+          : "Coś poszło nie tak. Spróbuj ponownie.",
       );
     }
   };
 
   const inputClass =
-    "w-full px-3.5 py-2.5 text-base rounded-lg border border-accent-soft/60 bg-white/80 text-text placeholder:text-text-muted/60 focus:border-primary focus:ring-2 focus:ring-ring transition outline-none min-h-11";
+    "w-full px-3.5 py-2.5 text-base rounded-lg border border-accent-soft/60 bg-white/80 text-text placeholder:text-text-muted/60 placeholder:text-sm focus:border-primary focus:ring-2 focus:ring-ring transition outline-none min-h-11";
   const errorInputClass = "!border-red-700/70 focus:!ring-red-700/25";
 
   return (
@@ -150,79 +167,76 @@ export default function Contact() {
       className="relative section-padding scroll-mt-header overflow-hidden"
       aria-labelledby="contact-heading"
     >
-      <div className="ambient-orb ambient-orb-e pointer-events-none" aria-hidden />
+      <div
+        className="ambient-orb ambient-orb-e pointer-events-none"
+        aria-hidden
+      />
 
       <div className="container-custom relative section-stack">
-        <div className="space-y-3">
+        <div className="flex flex-col items-center gap-3 sm:gap-3.5">
           <SectionHeader
             label={contactSection.sectionLabel}
-            title={contactSection.title}
             titleId="contact-heading"
           />
           <motion.p
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.5 }}
+            viewport={viewportReveal}
             variants={fadeUp}
-            className="section-lead"
+            className="contact-hours"
           >
-            <RichCopy>{contactSection.lead}</RichCopy>
+            <FaRegClock
+              size={12}
+              className="text-accent shrink-0"
+              aria-hidden
+            />
+            <span>
+              <span className="font-semibold text-text">
+                {contactHours.label}:
+              </span>{" "}
+              {contactHours.value}
+            </span>
           </motion.p>
         </div>
 
-        <div className="contact-layout">
-          <Reveal
-            variants={slideFromLeft}
-            as="div"
-            className="card-glass card-interactive card-padding contact-info-card flex flex-col gap-4"
+        <div className="contact-stack">
+          <motion.ul
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewportReveal}
+            variants={staggerContainer}
+            className="contact-actions"
           >
-            <div>
-              <p className="text-[0.6875rem] uppercase font-semibold tracking-[0.16em] text-accent mb-2">
-                {contactSection.socialHeading}
-              </p>
-              <div className="contact-social-row flex flex-wrap gap-2">
-                {socialProfiles.map((profile) => {
-                  const Icon = socialIcons[profile.platform];
-                  return (
-                    <motion.a
-                      key={profile.platform}
-                      href={profile.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={profile.label}
-                      whileHover={{ y: -2, scale: 1.03 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="social-icon-btn !w-11 !h-11"
-                    >
-                      <Icon size={18} aria-hidden />
-                    </motion.a>
-                  );
-                })}
-              </div>
-            </div>
-
-            <dl className="space-y-3.5">
-              {contactDetails.map((item) => (
-                <div key={item.id}>
-                  <dt className="text-[0.6875rem] uppercase font-semibold tracking-[0.16em] text-accent mb-1">
-                    {item.label}
-                  </dt>
-                  <dd className="text-text text-[0.9375rem] md:text-base break-words [overflow-wrap:anywhere]">
-                    {item.href ? (
-                      <a
-                        href={item.href}
-                        className="hover:text-primary-dark underline-offset-4 hover:underline transition-colors break-words [overflow-wrap:anywhere]"
-                      >
-                        {item.value}
-                      </a>
-                    ) : (
-                      item.value
-                    )}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </Reveal>
+            {contactActions.map((action) => {
+              const Icon = actionIcons[action.id];
+              return (
+                <motion.li key={action.id} variants={staggerItem}>
+                  <a
+                    href={action.href}
+                    aria-label={action.ariaLabel}
+                    {...(action.external
+                      ? { target: "_blank", rel: "noopener noreferrer" }
+                      : {})}
+                    className="contact-action card-glass card-interactive"
+                  >
+                    <span className="contact-action-icon" aria-hidden>
+                      <Icon size={14} />
+                    </span>
+                    <span className="contact-action-text">
+                      <span className="contact-action-label">
+                        {action.label}
+                      </span>
+                      {action.value && (
+                        <span className="contact-action-value">
+                          {action.value}
+                        </span>
+                      )}
+                    </span>
+                  </a>
+                </motion.li>
+              );
+            })}
+          </motion.ul>
 
           <motion.form
             onSubmit={handleSubmit}
@@ -230,11 +244,11 @@ export default function Contact() {
             initial="hidden"
             whileInView="visible"
             viewport={viewportReveal}
-            variants={slideFromRight}
+            variants={fadeUp}
             transition={{ delay: 0.04 }}
-            className="contact-form-card card-glass card-interactive card-padding flex flex-col gap-3 w-full max-w-xl lg:max-w-none"
+            className="contact-form-card card-glass card-interactive card-padding flex flex-col gap-3"
           >
-            <p className="text-sm text-text-muted leading-snug text-left">
+            <p className="text-[0.8125rem] text-text-muted leading-relaxed text-center text-balance pb-3 mb-1 border-b border-accent/25">
               {contactSection.formIntro}
             </p>
 

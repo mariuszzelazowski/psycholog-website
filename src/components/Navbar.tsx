@@ -6,6 +6,7 @@ import {
   useRef,
   useCallback,
   useLayoutEffect,
+  useSyncExternalStore,
 } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
@@ -20,11 +21,18 @@ import {
   syncHeaderOffsetVar,
 } from "@/lib/scroll-to-section";
 
+const subscribeNoop = () => () => {};
+
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [navHeightPx, setNavHeightPx] = useState(0);
-  const [canPortal, setCanPortal] = useState(false);
+  /** `false` przy SSR i hydratacji, `true` w przeglądarce — portal wymaga `document.body`. */
+  const canPortal = useSyncExternalStore(
+    subscribeNoop,
+    () => true,
+    () => false,
+  );
   const [menuMounted, setMenuMounted] = useState(false);
   const pendingScrollRef = useRef<AppSection | null>(null);
   const navRef = useRef<HTMLElement>(null);
@@ -32,7 +40,7 @@ export default function Navbar() {
   const prefersReducedMotion = useReducedMotion();
 
   const baseItem =
-    "cursor-pointer relative min-h-12 px-4 py-3 rounded-2xl text-sm tracking-wide font-medium transition-all duration-300 backdrop-blur-md border shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] touch-manipulation";
+    "cursor-pointer relative min-h-12 px-4 py-3 rounded-2xl font-display text-[0.9375rem] font-semibold tracking-[-0.005em] transition-all duration-300 backdrop-blur-md border shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] touch-manipulation";
 
   const measureNavHeight = useCallback(() => {
     const nav = navRef.current;
@@ -94,7 +102,9 @@ export default function Navbar() {
    */
   const triggerTouchStartRef = useRef<{ x: number; y: number } | null>(null);
 
-  const handleTriggerTouchStart = (event: React.TouchEvent<HTMLButtonElement>) => {
+  const handleTriggerTouchStart = (
+    event: React.TouchEvent<HTMLButtonElement>,
+  ) => {
     const touch = event.touches[0];
     triggerTouchStartRef.current =
       event.touches.length === 1 && touch
@@ -102,7 +112,9 @@ export default function Navbar() {
         : null;
   };
 
-  const handleTriggerTouchEnd = (event: React.TouchEvent<HTMLButtonElement>) => {
+  const handleTriggerTouchEnd = (
+    event: React.TouchEvent<HTMLButtonElement>,
+  ) => {
     const start = triggerTouchStartRef.current;
     triggerTouchStartRef.current = null;
     const touch = event.changedTouches[0];
@@ -124,7 +136,6 @@ export default function Navbar() {
   };
 
   useEffect(() => {
-    setCanPortal(true);
     resetBodyScrollLock();
   }, []);
 
@@ -249,7 +260,7 @@ export default function Navbar() {
                         className={`${baseItem} w-full text-center ${
                           link.isCTA
                             ? "nav-cta"
-                            : "bg-bg-soft/80 text-text border-accent/30"
+                            : "nav-link"
                         }`}
                       >
                         {link.label}
@@ -304,7 +315,7 @@ export default function Navbar() {
                 className={`${baseItem} whitespace-nowrap ${
                   link.isCTA
                     ? "nav-cta hover:shadow-lg"
-                    : "bg-bg-soft/70 text-text border-accent/30 hover:border-accent/50 hover:text-primary-dark"
+                    : "nav-link"
                 }`}
               >
                 {link.label}

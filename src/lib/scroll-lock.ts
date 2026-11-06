@@ -41,6 +41,15 @@ function blockTouchScroll(event: TouchEvent) {
   event.preventDefault();
 }
 
+/** `html { scroll-behavior: smooth }` animowałby przywrócenie pozycji — po zamknięciu menu strona przewijałaby się od góry. */
+function restoreScrollPosition(scrollY: number) {
+  const root = document.documentElement;
+  const previous = root.style.scrollBehavior;
+  root.style.scrollBehavior = "auto";
+  window.scrollTo({ top: scrollY, left: 0, behavior: "instant" });
+  root.style.scrollBehavior = previous;
+}
+
 function applyLockFixed() {
   savedScrollY = readScrollY();
   const { body } = document;
@@ -81,7 +90,7 @@ function applyUnlockFixed() {
   body.style.overflow = "";
   delete body.dataset.scrollLocked;
 
-  window.scrollTo(0, scrollY);
+  restoreScrollPosition(scrollY);
 }
 
 function applyUnlockSoft() {
@@ -98,7 +107,7 @@ function applyUnlockSoft() {
     touchBlockActive = false;
   }
 
-  window.scrollTo(0, scrollY);
+  restoreScrollPosition(scrollY);
 }
 
 function applyLock() {

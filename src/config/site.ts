@@ -1,10 +1,9 @@
-import { contact, contactDetailLabels } from "@/config/content";
-import { ContactDetail } from "@/config/enums";
+import { contact, contactDetailLabels, socialProfiles } from "@/config/content";
+import { ContactDetail, SocialPlatform } from "@/config/enums";
 
 /** Wartości runtime (env ma pierwszeństwo nad `content.ts`). */
 export const siteConfig = {
-  contactEmail:
-    process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? contact.email,
+  contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? contact.email,
   phone: contact.phoneDisplay,
   phoneHref: `tel:${contact.phoneTel}`,
   instagramUsername:
@@ -12,35 +11,47 @@ export const siteConfig = {
   hours: contact.hours,
 } as const;
 
-export type ContactDetailRow = {
-  id: ContactDetail;
+export type ContactAction = {
+  id: ContactDetail.Email | ContactDetail.Phone | SocialPlatform;
   label: string;
-  value: string;
-  href?: string;
+  value?: string;
+  href: string;
+  /** Pełny opis dla czytników ekranu (np. nazwa profilu). */
+  ariaLabel: string;
+  external?: boolean;
 };
 
-/** Lista do sekcji kontakt — budowana z `siteConfig` + etykiet z content. */
-export function getContactDetails(): ContactDetailRow[] {
+/** Kafelki-akcje w sekcji kontakt — budowane z `siteConfig` + etykiet z content. */
+export function getContactActions(): ContactAction[] {
   return [
     {
       id: ContactDetail.Email,
       label: contactDetailLabels[ContactDetail.Email],
       value: siteConfig.contactEmail,
       href: `mailto:${siteConfig.contactEmail}`,
+      ariaLabel: `${contactDetailLabels[ContactDetail.Email]}: ${siteConfig.contactEmail}`,
     },
     {
       id: ContactDetail.Phone,
       label: contactDetailLabels[ContactDetail.Phone],
       value: siteConfig.phone,
       href: siteConfig.phoneHref,
+      ariaLabel: `${contactDetailLabels[ContactDetail.Phone]}: ${siteConfig.phone}`,
     },
-    {
-      id: ContactDetail.Hours,
-      label: contactDetailLabels[ContactDetail.Hours],
-      value: siteConfig.hours,
-    },
+    ...socialProfiles.map((profile) => ({
+      id: profile.platform,
+      label: profile.title,
+      href: profile.href,
+      ariaLabel: profile.label,
+      external: true,
+    })),
   ];
 }
+
+export const contactHours = {
+  label: contactDetailLabels[ContactDetail.Hours],
+  value: siteConfig.hours,
+} as const;
 
 /** Kotwica do linków `#sekcja` */
 export function sectionHref(sectionId: string) {

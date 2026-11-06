@@ -1,9 +1,9 @@
 import {
-  about,
   brand,
   contact,
   seo,
   services,
+  servicesSection,
   socialProfiles,
 } from "@/config/content";
 import { AppSection } from "@/config/enums";
@@ -65,7 +65,7 @@ export default function JsonLd() {
           "Hipnoterapia",
           "Terapia poznawczo-behawioralna (CBT)",
           "Terapia skoncentrowana na rozwiązaniach (TSR)",
-          ...about.challenges.map(stripMarkup),
+          ...servicesSection.challenges.map(stripMarkup),
         ],
       },
       {

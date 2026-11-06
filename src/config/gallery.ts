@@ -4,7 +4,7 @@ export type GallerySlide = {
   alt: string;
   /** Krótkie motto / myśl na slajdzie karuzeli. */
   motto: string;
-  /** Zdjęcie: `object-cover` + lekki filtr; SVG: `object-contain`. */
+  /** Zdjęcie: `object-cover` + lekki filtr; grafika: `object-contain`. */
   isPhoto?: boolean;
   /** Kadrowanie (mniej „ucięć” przy cover) — wartości CSS `object-position`. */
   photoObjectPosition?: string;
@@ -14,8 +14,18 @@ export type GallerySlide = {
   mottoTone?: "neutral" | "green" | "burgundy";
 };
 
-/** Lokalne ilustracje — działają bez zewnętrznych CDN. Kolejność: zdjęcia i SVG naprzemiennie. */
+/** Pierwszy slajd Hero: portret. */
 export const heroSlides: GallerySlide[] = [
+  {
+    id: "hero-photo-portret-fotel",
+    src: "/images/photos/about-portret-fotel.jpg",
+    alt: "Paulina Misztal — psycholożka w przestrzeni gabinetu",
+    motto: "Obecność i szacunek — fundament naszej współpracy.",
+    isPhoto: true,
+    mottoTone: "neutral",
+    photoObjectPosition: "center 28%",
+    photoEaseCrop: true,
+  },
   {
     id: "hero-photo-zielone",
     src: "/images/photos/hero-gabinet-zielone.jpg",
@@ -27,11 +37,13 @@ export const heroSlides: GallerySlide[] = [
     photoEaseCrop: true,
   },
   {
-    id: "hero-psychoterapia",
-    src: "/images/psychoterapia.svg",
-    alt: "Ilustracja: rozmowa terapeutyczna i wsparcie emocjonalne",
-    motto: "Każda rozmowa może otworzyć nowy rozdział.",
+    id: "hero-photo-logo",
+    src: "/images/photos/logo-paulina-misztal.jpg",
+    alt: "Logo: Paulina Misztal, psycholog",
+    motto: "Odnowa wewnętrzna — we własnym tempie.",
+    isPhoto: true,
     mottoTone: "neutral",
+    photoObjectPosition: "center 40%",
   },
   {
     id: "hero-photo-bordowe",
@@ -44,30 +56,6 @@ export const heroSlides: GallerySlide[] = [
     photoEaseCrop: true,
   },
   {
-    id: "hero-psychologia",
-    src: "/images/psychologia.svg",
-    alt: "Ilustracja: psychologia i refleksja nad sobą",
-    motto: "Zrozumienie siebie to pierwszy krok ku zmianie.",
-    mottoTone: "neutral",
-  },
-  {
-    id: "hero-photo-portret-fotel",
-    src: "/images/photos/about-portret-fotel.jpg",
-    alt: "Paulina Misztal — psycholożka w przestrzeni gabinetu",
-    motto: "Obecność i szacunek — fundament naszej współpracy.",
-    isPhoto: true,
-    mottoTone: "neutral",
-    photoObjectPosition: "center 28%",
-    photoEaseCrop: true,
-  },
-  {
-    id: "hero-mindfulness",
-    src: "/images/mindfulness.svg",
-    alt: "Ilustracja: mindfulness i wewnętrzny spokój",
-    motto: "Tu i teraz — oddech wraca do swojego rytmu.",
-    mottoTone: "neutral",
-  },
-  {
     id: "hero-photo-portret-zaluzje",
     src: "/images/photos/about-portret-zaluzje.jpg",
     alt: "Paulina Misztal — spokojny portret w świetle dnia",
@@ -76,20 +64,6 @@ export const heroSlides: GallerySlide[] = [
     mottoTone: "neutral",
     photoObjectPosition: "center 30%",
     photoEaseCrop: true,
-  },
-  {
-    id: "hero-hipnoza",
-    src: "/images/hipnoza.svg",
-    alt: "Ilustracja: głęboki relaks i hipnoterapia",
-    motto: "W spokoju umysłu pojawia się przestrzeń na uzdrowienie.",
-    mottoTone: "neutral",
-  },
-  {
-    id: "hero-gabinet",
-    src: "/images/gabinet.svg",
-    alt: "Ilustracja: spokojna przestrzeń gabinetu",
-    motto: "Przestrzeń zaprojektowana dla Twojego komfortu.",
-    mottoTone: "neutral",
   },
 ];
 
@@ -105,11 +79,13 @@ export const aboutSlides: GallerySlide[] = [
     photoEaseCrop: true,
   },
   {
-    id: "about-specjalista",
-    src: "/images/specjalista.svg",
-    alt: "Ilustracja: specjalistka w gabinecie psychologicznym",
+    id: "about-photo-logo",
+    src: "/images/photos/logo-paulina-misztal.jpg",
+    alt: "Logo: Paulina Misztal, psycholog",
     motto: "Profesja sercem — nauka i empatia w jednym.",
+    isPhoto: true,
     mottoTone: "neutral",
+    photoObjectPosition: "center 40%",
   },
   {
     id: "about-photo-kanapa",
@@ -120,19 +96,5 @@ export const aboutSlides: GallerySlide[] = [
     mottoTone: "burgundy",
     photoObjectPosition: "center 32%",
     photoEaseCrop: true,
-  },
-  {
-    id: "about-psychoterapia",
-    src: "/images/psychoterapia.svg",
-    alt: "Ilustracja: psychoterapia i bezpieczna relacja",
-    motto: "Relacja leczy — przestrzeń na prawdę o sobie.",
-    mottoTone: "neutral",
-  },
-  {
-    id: "about-wsparcie",
-    src: "/images/wsparcie.svg",
-    alt: "Ilustracja: wsparcie w trudnym momencie",
-    motto: "Wsparcie wtedy, gdy najbardziej go potrzebujesz.",
-    mottoTone: "neutral",
   },
 ];

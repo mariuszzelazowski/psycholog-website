@@ -53,7 +53,7 @@ export const seo = {
  * E-mail i Instagram można nadpisać przez `.env.local` (patrz `site.ts`).
  */
 export const contact = {
-  email: "zelazowskimariusz91@gmail.com",
+  email: "paulinamisztal001@gmail.com",
   phoneDisplay: "+48 515 965 363",
   /** Cyfry do linku tel: (bez spacji) */
   phoneTel: "+48515965363",
@@ -66,20 +66,23 @@ export const contact = {
 /** Linki do profili — ikony w sekcji kontakt (edytuj href). */
 export const socialProfiles = [
   {
-    platform: SocialPlatform.Facebook,
-    href: "https://www.facebook.com/profile.php?id=61592452897275",
-    label: "Odnowa wewnętrzna na Facebooku",
-  },
-  {
     platform: SocialPlatform.Instagram,
     href: "https://www.instagram.com/odnowa.wewnetrzna/",
     label: "Odnowa wewnętrzna na Instagramie",
+    title: "Instagram",
+  },
+  {
+    platform: SocialPlatform.Facebook,
+    href: "https://www.facebook.com/profile.php?id=61592452897275",
+    label: "Odnowa wewnętrzna na Facebooku",
+    title: "Facebook",
   },
 ] as const;
 
+/** Etykiety kafelków-akcji w sekcji kontakt. */
 export const contactDetailLabels: Record<ContactDetail, string> = {
-  [ContactDetail.Email]: "E-mail",
-  [ContactDetail.Phone]: "Telefon",
+  [ContactDetail.Email]: "Napisz e-mail",
+  [ContactDetail.Phone]: "Zadzwoń",
   [ContactDetail.Hours]: "Godziny przyjęć",
 };
 
@@ -109,25 +112,25 @@ export const services = [
 export const navigation = [
   {
     id: NavItem.About,
-    label: "Poznaj mnie bliżej",
+    label: "O mnie",
     section: AppSection.About,
     isCTA: false,
   },
   {
     id: NavItem.Services,
-    label: "Zakres wsparcia",
+    label: "Oferta",
     section: AppSection.Services,
     isCTA: false,
   },
   {
     id: NavItem.Resources,
-    label: "Przydatne materiały",
+    label: "Dla Ciebie",
     section: AppSection.Resources,
     isCTA: false,
   },
   {
     id: NavItem.Contact,
-    label: "Spotkajmy się",
+    label: "Skontaktuj się",
     section: AppSection.Contact,
     isCTA: true,
   },
@@ -147,7 +150,6 @@ export const hero = {
 /** Sekcja o mnie */
 export const about = {
   sectionLabel: "O mnie",
-  title: "Poznaj mnie bliżej",
   /** Pierwszy akapit po „Nazywam się {fullName}.” */
   introAfterName:
     "Jestem [[psychologiem]] oraz certyfikowaną [[hipnoterapeutką]]. Aktualnie jestem w trakcie szkolenia psychoterapeutycznego w nurcie **poznawczo-behawioralnym (CBT)**.",
@@ -161,28 +163,30 @@ export const about = {
     "Brałam udział w licznych szkoleniach i warsztatach, m.in.: certyfikowany kurs [[hipnozy]] (Omni Hypnosis Training Center), TSR – I stopień (CTSR), „Praca z ciałem – jak to robią terapeuci tańcem i ruchem”.",
     "Doświadczenie zdobywałam w Telefonie Pogadania oraz podczas stażu w **Ośrodku Interwencji Kryzysowej** w Piasecznie, gdzie wspierałam osoby w [[kryzysach emocjonalnych]].",
   ],
-  challengesTitle: "Wspieram osoby, które zmagają się z:",
-  challenges: [
-    "[[niskim poczuciem własnej wartości]], lękami, fobiami i **przewlekłym stresem**",
-    "trudnościami w **relacjach partnerskich i rodzinnych**",
-    "[[kryzysami życiowymi]]",
-    "[[wypaleniem zawodowym]] i perfekcjonizmem",
-    "**DDA**, **DDD**",
-  ],
-  challengesFooter:
-    "Towarzyszę również osobom, które pragną **lepiej poznać siebie** i rozwijać swój [[potencjał]].",
 } as const;
 
 /** Sekcja oferta — nagłówki */
 export const servicesSection = {
   sectionLabel: "Oferta",
-  title: "Zakres wsparcia",
+  challengesTitle: "Wspieram osoby, które zmagają się z:",
+  offersTitle: "Jak mogę Ci pomóc",
+  /** Krótkie hasła — wyświetlane jako pigułki pod nagłówkiem sekcji. */
+  challenges: [
+    "niskim poczuciem własnej wartości",
+    "lękami i fobiami",
+    "przewlekłym stresem",
+    "trudnościami w relacjach partnerskich i rodzinnych",
+    "kryzysami życiowymi",
+    "wypaleniem zawodowym",
+    "perfekcjonizmem",
+    "DDA, DDD",
+    "potrzebą lepszego poznania siebie i rozwoju potencjału",
+  ],
 } as const;
 
 /** Sekcja materiały do pobrania */
 export const resourcesSection = {
   sectionLabel: "Dla Ciebie",
-  title: "Przydatne materiały",
   lead:
     "Mały **prezent** od serca — narzędzie, które możesz zabrać ze sobą i wracać do niego we własnym tempie.",
 } as const;
@@ -201,10 +205,6 @@ export const resourcesGift = {
 /** Sekcja kontakt — copy */
 export const contactSection = {
   sectionLabel: "Skontaktuj się",
-  title: "Pozostańmy w kontakcie",
-  lead:
-    "Napisz przez **formularz e-mail**, zadzwoń lub odwiedź profile na [[Facebooku]] i [[Instagramie]].",
-  socialHeading: "Social media",
   formIntro: "Formularz wysyła wiadomość na adres e-mail gabinetu.",
   formPlaceholders: {
     name: "Imię i nazwisko",
