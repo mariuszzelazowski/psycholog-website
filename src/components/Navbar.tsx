@@ -30,6 +30,8 @@ export default function Navbar() {
   const scrollLockActiveRef = useRef(false);
   /** Po touchend symulowany click jest pomijany — działa na iOS, Android (Samsung), bez preventDefault na pointerze. */
   const suppressMenuClickRef = useRef(false);
+  /** DevTools mobile emulation: po touchend bywa brak syntetycznego click — wtedy reset flagi, żeby mysz działała. */
+  const suppressMenuClickTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prefersReducedMotion = useReducedMotion();
 
   const baseItem =
@@ -92,13 +94,24 @@ export default function Navbar() {
     if (event.changedTouches.length !== 1) {
       return;
     }
+    if (suppressMenuClickTimeoutRef.current) {
+      clearTimeout(suppressMenuClickTimeoutRef.current);
+    }
     suppressMenuClickRef.current = true;
     toggleMenu();
+    suppressMenuClickTimeoutRef.current = setTimeout(() => {
+      suppressMenuClickTimeoutRef.current = null;
+      suppressMenuClickRef.current = false;
+    }, 450);
   };
 
   const handleMenuButtonClick = (event: ReactMouseEvent<HTMLButtonElement>) => {
     if (suppressMenuClickRef.current) {
       suppressMenuClickRef.current = false;
+      if (suppressMenuClickTimeoutRef.current) {
+        clearTimeout(suppressMenuClickTimeoutRef.current);
+        suppressMenuClickTimeoutRef.current = null;
+      }
       return;
     }
     toggleMenu();
@@ -150,6 +163,9 @@ export default function Navbar() {
 
   useEffect(() => {
     return () => {
+      if (suppressMenuClickTimeoutRef.current) {
+        clearTimeout(suppressMenuClickTimeoutRef.current);
+      }
       resetBodyScrollLock();
       scrollLockActiveRef.current = false;
     };
