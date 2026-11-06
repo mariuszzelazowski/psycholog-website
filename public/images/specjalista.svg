@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="Specjalistka">
+  <rect width="800" height="1000" fill="#ece6de"/>
+  <circle cx="400" cy="360" r="110" fill="#44596f" opacity="0.88"/>
+  <path d="M260 720 Q400 580 540 720 L540 820 L260 820 Z" fill="#2f3d4e" opacity="0.82"/>
+  <rect x="300" y="480" width="200" height="120" rx="20" fill="#b8956a" opacity="0.35"/>
+  <text x="400" y="920" text-anchor="middle" font-family="Georgia, serif" font-size="26" fill="#44596f" opacity="0.7">Gabinet psychologiczny</text>
+</svg>

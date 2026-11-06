@@ -2,7 +2,29 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { FaFacebookF, FaInstagram, FaFacebookMessenger } from "react-icons/fa";
+import { FaFacebookF, FaInstagram } from "react-icons/fa";
+import {
+  AppSection,
+  contactSection,
+  getContactDetails,
+  socialProfiles,
+  SocialPlatform,
+} from "@/config";
+import SectionHeader from "@/components/motion/SectionHeader";
+import Reveal from "@/components/motion/Reveal";
+import RichCopy from "@/lib/rich-copy";
+import { submitContact } from "@/lib/submit-contact";
+import {
+  fadeUp,
+  slideFromLeft,
+  slideFromRight,
+  viewportReveal,
+} from "@/lib/motion";
+
+const socialIcons = {
+  [SocialPlatform.Facebook]: FaFacebookF,
+  [SocialPlatform.Instagram]: FaInstagram,
+} as const;
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -10,156 +32,202 @@ export default function Contact() {
     email: "",
     message: "",
   });
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
+  const [feedback, setFeedback] = useState("");
 
-  const colors = {
-    primary: "var(--primary)",
-    accent: "var(--accent)",
-    bg: "var(--bg)",
-    text: "var(--text)",
-    textMuted: "var(--text-muted)",
-  };
+  const contactDetails = getContactDetails();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => setFormData({ ...formData, [e.target.name]: e.target.value });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log(formData);
+  ) => {
+    setStatus("idle");
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const contactInfo = [
-    { label: "Email", value: "kontakt@psycholog.pl" },
-    { label: "Telefon", value: "+48 123 456 789" },
-    { label: "Adres", value: "Warszawa, Bródno" },
-  ];
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("loading");
+    setFeedback("");
 
-  const InputField = ({
-    name,
-    placeholder,
-    type = "text",
-    rows,
-  }: {
-    name: string;
-    placeholder: string;
-    type?: string;
-    rows?: number;
-  }) =>
-    rows ? (
-      <textarea
-        name={name}
-        placeholder={placeholder}
-        rows={rows}
-        value={formData[name as keyof typeof formData]}
-        onChange={handleChange}
-        className="w-full p-4 rounded-xl border focus:ring-2 transition"
-        style={{
-          borderColor: colors.accent,
-          color: colors.text,
-          backgroundColor: colors.bg,
-        }}
-      />
-    ) : (
-      <input
-        type={type}
-        name={name}
-        placeholder={placeholder}
-        value={formData[name as keyof typeof formData]}
-        onChange={handleChange}
-        className="w-full p-4 rounded-xl border focus:ring-2 transition"
-        style={{
-          borderColor: colors.accent,
-          color: colors.text,
-          backgroundColor: colors.bg,
-        }}
-      />
-    );
+    try {
+      const result = await submitContact(formData);
+      if (!result.ok) {
+        setStatus("error");
+        setFeedback(result.error);
+        return;
+      }
+
+      setStatus("success");
+      if (result.via === "web3forms") {
+        setFeedback(contactSection.submitSuccessWeb3);
+        setFormData({ name: "", email: "", message: "" });
+      } else {
+        setFeedback(contactSection.submitSuccessMailto);
+      }
+    } catch (err) {
+      setStatus("error");
+      setFeedback(
+        err instanceof Error ? err.message : "Coś poszło nie tak. Spróbuj ponownie.",
+      );
+    }
+  };
+
+  const inputClass =
+    "w-full px-3.5 py-2.5 text-base rounded-lg border border-accent-soft/60 bg-white/80 text-text placeholder:text-text-muted/60 focus:border-primary focus:ring-2 focus:ring-ring transition outline-none min-h-11";
 
   return (
-    <section id="contact" className="py-10 flex flex-col items-center">
-      {/* Nagłówek */}
-      <h2
-        className="text-3xl md:text-4xl font-light text-center mb-10"
-        style={{ color: colors.primary }}
-      >
-        Napisz do mnie
-      </h2>
+    <section
+      id={AppSection.Contact}
+      className="relative section-padding scroll-mt-header overflow-hidden"
+      aria-labelledby="contact-heading"
+    >
+      <div className="ambient-orb ambient-orb-e pointer-events-none" aria-hidden />
 
-      <div className="container mx-auto flex flex-col md:flex-row gap-6 md:gap-10 items-center md:items-start justify-center md:justify-start max-w-6xl">
-        {/* Info + Socials */}
-        <motion.div
-          initial={{ opacity: 0, x: -50 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="flex-1 flex flex-col gap-6 text-center md:text-left max-w-md"
-        >
-          <p style={{ color: colors.textMuted }}>
-            Masz pytania lub chcesz umówić wizytę? <br /> Odezwij się. <br />{" "}
-            Odpowiem tak szybko, jak to możliwe.
-          </p>
-
-          <div
-            className="flex flex-col gap-3"
-            style={{ color: colors.textMuted }}
+      <div className="container-custom relative section-stack">
+        <div className="space-y-3">
+          <SectionHeader
+            label={contactSection.sectionLabel}
+            title={contactSection.title}
+            titleId="contact-heading"
+          />
+          <motion.p
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.5 }}
+            variants={fadeUp}
+            className="section-lead"
           >
-            {contactInfo.map((item) => (
-              <div key={item.label}>
-                <strong>{item.label}:</strong> {item.value}
+            <RichCopy>{contactSection.lead}</RichCopy>
+          </motion.p>
+        </div>
+
+        <div className="contact-layout">
+          <Reveal
+            variants={slideFromLeft}
+            as="div"
+            className="card-glass card-interactive card-padding contact-info-card flex flex-col gap-4"
+          >
+            <div>
+              <p className="text-[0.625rem] uppercase font-semibold tracking-[0.16em] text-accent mb-2">
+                {contactSection.socialHeading}
+              </p>
+              <div className="contact-social-row flex flex-wrap gap-2">
+                {socialProfiles.map((profile) => {
+                  const Icon = socialIcons[profile.platform];
+                  return (
+                    <motion.a
+                      key={profile.platform}
+                      href={profile.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={profile.label}
+                      whileHover={{ y: -2, scale: 1.03 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="social-icon-btn !w-11 !h-11"
+                    >
+                      <Icon size={18} aria-hidden />
+                    </motion.a>
+                  );
+                })}
               </div>
-            ))}
-          </div>
+            </div>
 
-          <div className="mt-6 flex justify-center md:justify-start gap-6">
-            <a
-              href="https://www.facebook.com/paulina.misztal"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FaFacebookF size={24} style={{ color: colors.textMuted }} />
-            </a>
-            <a
-              href="https://www.messenger.com/t/yourpage"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FaFacebookMessenger
-                size={24}
-                style={{ color: colors.textMuted }}
-              />
-            </a>
-            <a
-              href="https://www.instagram.com/yourpage"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FaInstagram size={24} style={{ color: colors.textMuted }} />
-            </a>
-          </div>
-        </motion.div>
+            <dl className="space-y-3">
+              {contactDetails.map((item) => (
+                <div key={item.id}>
+                  <dt className="text-[0.625rem] uppercase font-semibold tracking-[0.16em] text-accent mb-0.5">
+                    {item.label}
+                  </dt>
+                  <dd className="text-text text-[0.9375rem] md:text-base break-words [overflow-wrap:anywhere]">
+                    {item.href ? (
+                      <a
+                        href={item.href}
+                        className="hover:text-primary-dark underline-offset-4 hover:underline transition-colors break-words [overflow-wrap:anywhere]"
+                      >
+                        {item.value}
+                      </a>
+                    ) : (
+                      item.value
+                    )}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </Reveal>
 
-        {/* Form */}
-        <motion.form
-          onSubmit={handleSubmit}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="flex-1 flex flex-col gap-4 p-4 mx-20 rounded-xl shadow-lg max-w-md w-90"
-          style={{ backgroundColor: colors.bg }}
-        >
-          <InputField name="name" placeholder="Imię" />
-          <InputField name="email" placeholder="Email" type="email" />
-          <InputField name="message" placeholder="Wiadomość" rows={8} />
-
-          <button
-            type="submit"
-            className="mt-1 py-3 rounded-xl hover:opacity-90 transition"
-            style={{ backgroundColor: colors.primary }}
+          <motion.form
+            onSubmit={handleSubmit}
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewportReveal}
+            variants={slideFromRight}
+            transition={{ delay: 0.04 }}
+            className="contact-form-card card-glass card-interactive card-padding flex flex-col gap-3 w-full max-w-xl lg:max-w-none"
           >
-            Napisz mi wiadomość
-          </button>
-        </motion.form>
+            <p className="text-sm text-text-muted leading-snug text-left">
+              {contactSection.formIntro}
+            </p>
+
+            <input
+              type="text"
+              name="name"
+              required
+              autoComplete="name"
+              placeholder={contactSection.formPlaceholders.name}
+              value={formData.name}
+              onChange={handleChange}
+              className={inputClass}
+            />
+            <input
+              type="email"
+              name="email"
+              required
+              autoComplete="email"
+              placeholder={contactSection.formPlaceholders.email}
+              value={formData.email}
+              onChange={handleChange}
+              className={inputClass}
+            />
+            <textarea
+              name="message"
+              required
+              rows={5}
+              placeholder={contactSection.formPlaceholders.message}
+              value={formData.message}
+              onChange={handleChange}
+              className={`${inputClass} resize-y min-h-[120px]`}
+            />
+
+            <motion.button
+              type="submit"
+              disabled={status === "loading"}
+              whileHover={status === "loading" ? undefined : { y: -2 }}
+              whileTap={status === "loading" ? undefined : { scale: 0.99 }}
+              className="btn-primary w-full !min-h-11"
+            >
+              {status === "loading"
+                ? contactSection.submitLoading
+                : contactSection.submitEmail}
+            </motion.button>
+
+            {feedback && (
+              <motion.p
+                role="status"
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`text-sm rounded-lg py-2.5 px-3 ${
+                  status === "error"
+                    ? "text-red-900 bg-red-50 border border-red-100"
+                    : "text-primary-dark bg-primary/10 border border-primary/15"
+                }`}
+              >
+                {feedback}
+              </motion.p>
+            )}
+          </motion.form>
+        </div>
       </div>
     </section>
   );

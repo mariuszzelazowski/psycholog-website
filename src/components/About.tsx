@@ -1,44 +1,111 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { about, aboutSlides, AppSection, brand } from "@/config";
+import MediaCarousel from "@/components/motion/MediaCarousel";
+import Reveal from "@/components/motion/Reveal";
+import SectionHeader from "@/components/motion/SectionHeader";
+import AccentMarker from "@/components/ui/AccentMarker";
+import RichCopy from "@/lib/rich-copy";
+import {
+  fadeUp,
+  slideFromLeft,
+  slideFromRight,
+  staggerContainer,
+  staggerItem,
+} from "@/lib/motion";
 
 export default function About() {
   return (
-    <section id="about" className="py-8">
-      <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row gap-10 items-center">
-        <motion.div
-          initial={{ opacity: 0, x: -40 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="flex-1"
-        >
-          <div className="w-full p-2 max-w-m aspect-4/5 bg-(--bg) rounded-xl shadow-lg flex items-center justify-center">
-            <span className="text-(--text-muted)">
-              Tutaj będzie moje profesjonalne zdjęcie
-            </span>
-          </div>
-        </motion.div>
+    <section
+      id={AppSection.About}
+      className="relative section-padding scroll-mt-header overflow-hidden bg-linear-to-b from-bg-soft to-bg/60 border-b border-accent/20"
+      aria-labelledby="about-heading"
+    >
+      <div className="ambient-orb ambient-orb-c pointer-events-none" aria-hidden />
 
-        <motion.div
-          initial={{ opacity: 0, x: 40 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="flex-1"
-        >
-          <h2 className="text-4xl md: text-center lg:text-left font-light mb-6 text-(--primary)">
-            Poznaj mnie
-          </h2>
+      <div className="container-custom relative section-stack">
+        <SectionHeader
+          label={about.sectionLabel}
+          title={about.title}
+          titleId="about-heading"
+        />
 
-          <p className="mb-4 text-(--text-muted)">
-            Nazywam się Paulina Misztal i jestem psychologiem...
+        <div className="content-grid w-full grid grid-cols-1 lg:grid-cols-2 lg:gap-10 xl:gap-12 lg:items-start">
+          <Reveal
+            variants={slideFromLeft}
+            className="mx-auto w-full max-w-sm lg:max-w-none lg:mx-0 lg:sticky lg:top-[calc(var(--header-offset)+1rem)]"
+          >
+            <MediaCarousel
+              slides={aboutSlides}
+              intervalMs={5600}
+              frameClassName="aspect-square min-h-[240px] max-h-[min(88vw,400px)] sm:max-h-none sm:min-h-0"
+            />
+          </Reveal>
+
+          <Reveal variants={slideFromRight} className="space-y-5 lg:space-y-6 text-center lg:text-left">
+            <div className="prose-block prose-block-center-lg-left space-y-3">
+              <p>
+                Nazywam się{" "}
+                <span className="font-bold text-primary-dark">{brand.fullName}</span>
+                . <RichCopy>{about.introAfterName}</RichCopy>
+              </p>
+              {about.introParagraphs.map((paragraph) => (
+                <p key={paragraph.slice(0, 24)}>
+                  <RichCopy>{paragraph}</RichCopy>
+                </p>
+              ))}
+            </div>
+
+            <motion.div
+              whileHover={{ y: -3 }}
+              transition={{ type: "spring", stiffness: 320, damping: 22 }}
+              className="card-glass card-interactive card-padding card-callout space-y-3"
+            >
+              <h4 className="font-display text-lg md:text-xl font-semibold text-primary text-balance">
+                {about.experienceTitle}
+              </h4>
+              <div className="prose-block prose-block-center-lg-left space-y-2.5 text-[0.9375rem] md:text-base">
+                {about.experienceParagraphs.map((paragraph) => (
+                  <p key={paragraph.slice(0, 24)}>
+                    <RichCopy>{paragraph}</RichCopy>
+                  </p>
+                ))}
+              </div>
+            </motion.div>
+          </Reveal>
+        </div>
+
+        <Reveal variants={fadeUp} className="content-narrow w-full space-y-4 lg:space-y-5 pt-2 lg:pt-4">
+          <h4 className="font-display text-xl md:text-2xl font-semibold text-primary text-center text-balance">
+            {about.challengesTitle}
+          </h4>
+
+          <motion.ul
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={staggerContainer}
+            className="list-accent list-accent-centered max-w-2xl mx-auto lg:max-w-none"
+          >
+            {about.challenges.map((item) => (
+              <motion.li
+                key={item}
+                variants={staggerItem}
+                className="list-accent-item"
+              >
+                <AccentMarker />
+                <span className="min-w-0">
+                  <RichCopy>{item}</RichCopy>
+                </span>
+              </motion.li>
+            ))}
+          </motion.ul>
+
+          <p className="prose-block prose-block-center text-sm md:text-base max-w-2xl mx-auto">
+            <RichCopy>{about.challengesFooter}</RichCopy>
           </p>
-
-          <p className="text-(--text-muted)">
-            W swojej pracy łączę empatię i profesjonalizm...
-          </p>
-        </motion.div>
+        </Reveal>
       </div>
     </section>
   );

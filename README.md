@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Psycholog Warszawa — strona wizytówka
 
-## Getting Started
+Landing page gabinetu psychologicznego (Next.js 16, React 19, Tailwind CSS 4).
 
-First, run the development server:
+## Szybki podgląd (spotkanie / demo)
+
+**Tryb developerski** — hot reload:
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Otwórz [http://localhost:3000](http://localhost:3000). Na telefonie w tej samej sieci Wi‑Fi możesz wejść przez adres IP komputera i port `3000` (np. `http://192.168.1.x:3000`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Tryb produkcyjny** — bliżej tego, co pójdzie na hosting:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+Domyślnie: [http://localhost:3000](http://localhost:3000).
 
-To learn more about Next.js, take a look at the following resources:
+## Responsywność (RWD)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Strona jest układana mobile-first: nawigacja z menu hamburger na małych ekranach, siatki sekcji 1→2 kolumny, czytelna typografia i odstępy. Przy demo warto sprawdzić DevTools (iPhone / iPad) oraz prawdziwy telefon w tej samej sieci.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## SEO
 
-## Deploy on Vercel
+- Metadane: `src/config/content.ts` → `seo` (+ `src/lib/metadata.ts`)
+- Przed publikacją ustaw `NEXT_PUBLIC_SITE_URL` w `.env.local` (kanoniczny adres)
+- Automatycznie: `/sitemap.xml`, `/robots.txt`, JSON-LD (`ProfessionalService`)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Edycja treści (kontakt, oferta, teksty)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Większość danych jest w **`src/config/content.ts`** (marka, kontakt, usługi, teksty sekcji).  
+Enumy (sekcje, typy kontaktu, formy usług): **`src/config/enums.ts`**.
+
+E-mail / Instagram można też nadpisać w `.env.local` — patrz `env.example`.
+
+## Kontakt i Instagram
+
+Formularz wysyła wiadomości **automatycznie** przez [Web3Forms](https://web3forms.com) (`/api/contact` + `WEB3FORMS_ACCESS_KEY` w env). Bez klucza — awaryjnie `mailto:`.  
+Instrukcja darmowa: **[docs/VERCEL.md](docs/VERCEL.md)**.  
+Facebook i Instagram: `content.ts` → `socialProfiles`.
+
+## Wdrożenie na Vercel (darmowy plan, bez własnej domeny)
+
+Szczegóły krok po kroku: **[docs/VERCEL.md](docs/VERCEL.md)**.
+
+Krótko: połącz repo z [vercel.com](https://vercel.com), ustaw zmienne z `env.example` (Web3Forms + e-mail), deploy → adres `*.vercel.app`.  
+`NEXT_PUBLIC_SITE_URL` ustaw po pierwszym deploy na ten adres i zrób redeploy.
+
+```bash
+npm run deploy:vercel   # wymaga: npm i -g vercel && vercel login
+```
+
+## Uwagi przed publikacją
+
+- Ustaw właściwy nick Instagram w `.env.local` / Vercel env.
+- Ilustracje w hero i „O mnie” to lokalne SVG — docelowo można podmienić na zdjęcia.
+
+## Skrypty
+
+| Polecenie      | Opis                    |
+| -------------- | ----------------------- |
+| `npm run dev`  | Serwer deweloperski     |
+| `npm run build`| Build produkcyjny       |
+| `npm start`    | Serwer po `build`       |
+| `npm run lint` | ESLint                  |

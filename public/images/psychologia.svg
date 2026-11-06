@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-label="Psychologia">
+  <rect width="800" height="1000" fill="#f8f6f3"/>
+  <circle cx="400" cy="420" r="200" fill="none" stroke="#d4c4ad" stroke-width="2"/>
+  <circle cx="400" cy="420" r="140" fill="none" stroke="#44596f" stroke-width="3" opacity="0.4"/>
+  <path d="M400 280c-60 0-110 40-130 95 40-25 90-35 130-35s90 10 130 35c-20-55-70-95-130-95z" fill="#44596f" opacity="0.9"/>
+  <path d="M320 520c20 80 160 80 160 0" fill="none" stroke="#b8956a" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="350" cy="390" r="12" fill="#f8f6f3"/>
+  <circle cx="450" cy="390" r="12" fill="#f8f6f3"/>
+  <text x="400" y="880" text-anchor="middle" font-family="Georgia, serif" font-size="28" fill="#44596f" opacity="0.7">Psychologia</text>
+</svg>

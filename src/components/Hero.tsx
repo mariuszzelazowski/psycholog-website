@@ -1,87 +1,81 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
-
-const images = ["/hero1.jpg", "/hero2.jpg", "/hero3.jpg"];
+import { AppSection, hero, heroSlides, sectionHref } from "@/config";
+import MediaCarousel from "@/components/motion/MediaCarousel";
+import RichCopy from "@/lib/rich-copy";
+import { fadeUp, motionTransition, slideFromRight } from "@/lib/motion";
 
 export default function Hero() {
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(
-      () => setIndex((prev) => (prev + 1) % images.length),
-      4000,
-    );
-    return () => clearInterval(interval);
-  }, []);
-
   return (
-    <section className="relative py-4 px-10 overflow-hidden bg-linear-to-br from-bg bg-(--accent)/30">
-      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-6 items-center">
-        {/* LEFT — TEXT */}
+    <section
+      id={AppSection.Hero}
+      className="relative section-padding scroll-mt-header overflow-hidden bg-bg-soft"
+      aria-label="Wprowadzenie"
+    >
+      <div className="ambient-orb ambient-orb-a pointer-events-none" aria-hidden />
+      <div className="ambient-orb ambient-orb-b pointer-events-none" aria-hidden />
+
+      <div className="container-custom relative grid gap-8 md:grid-cols-2 md:gap-10 lg:gap-12 xl:gap-14 items-center max-w-6xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, x: -40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center md:text-left"
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: {},
+            visible: { transition: { staggerChildren: 0.1, delayChildren: 0.06 } },
+          }}
+          className="order-2 md:order-1 text-center md:text-left flex flex-col gap-3.5 md:gap-4"
         >
-          <h1 className="text-3xl md:text-5xl font-bold mb-4 leading-snug">
-            Konsultacje psychologiczne, hipnoterapia
-          </h1>
+          <motion.p variants={fadeUp} className="section-label mx-auto md:mx-0">
+            {hero.eyebrow}
+          </motion.p>
+          <motion.h1
+            variants={fadeUp}
+            className="font-display text-balance text-3xl min-[400px]:text-4xl sm:text-[2.65rem] lg:text-[3rem] font-semibold leading-[1.08] text-primary-dark"
+          >
+            {hero.title}
+            <span className="block text-accent font-bold mt-1.5 text-[0.92em]">
+              {hero.titleAccent}
+            </span>
+          </motion.h1>
+          <motion.p
+            variants={fadeUp}
+            className="prose-block prose-block-adaptive max-w-md md:max-w-lg font-medium"
+          >
+            <RichCopy>{hero.lead}</RichCopy>
+          </motion.p>
 
-          <p className="text-lg md:text-xl text-text-muted mb-4 max-w-md mx-auto md:mx-0">
-            Bezpieczna przestrzeń do rozmowy, zrozumienia i realnej zmiany.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-            <a
-              href="#contact"
-              className="bg-(--primary) text-(--bg-soft) px-6 py-3 rounded-xl hover:opacity-90 transition text-center"
+          <motion.div
+            variants={fadeUp}
+            className="flex flex-col min-[480px]:flex-row gap-2.5 sm:gap-3 justify-center md:justify-start pt-0.5 w-full min-[480px]:w-auto"
+          >
+            <motion.a
+              href={sectionHref(hero.ctaPrimary.section)}
+              className="btn-primary w-full min-[480px]:w-auto"
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.99 }}
             >
-              {" "}
-              Spotkajmy się{" "}
-            </a>
-
-            <a
-              href="#services"
-              className="border border-(--primary) text-(--primary) px-6 py-3 rounded-xl hover:bg-(--pri) bg-(--bg-soft)  transition text-center"
+              {hero.ctaPrimary.label}
+            </motion.a>
+            <motion.a
+              href={sectionHref(hero.ctaSecondary.section)}
+              className="btn-secondary w-full min-[480px]:w-auto"
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.99 }}
             >
-              Sprawdź zakres wsparcia
-            </a>
-          </div>
+              {hero.ctaSecondary.label}
+            </motion.a>
+          </motion.div>
         </motion.div>
 
-        {/* RIGHT — IMAGE SLIDER */}
         <motion.div
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
-          className="relative mx-auto md:mx-0 w-full max-w-sm md:max-w-md lg:max-w-lg"
+          initial="hidden"
+          animate="visible"
+          variants={slideFromRight}
+          transition={{ ...motionTransition, delay: 0.12 }}
+          className="order-1 md:order-2 relative mx-auto w-full max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl"
         >
-          <div className="relative rounded-xl border border-(--accent) p-1">
-            <div className="overflow-hidden rounded-xl aspect-4/5 relative">
-              {images.map((src, i) => (
-                <img
-                  key={src}
-                  src={src}
-                  alt="image"
-                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 rounded-xl ${i === index ? "opacity-100" : "opacity-0"}`}
-                />
-              ))}
-              <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent rounded-xl pointer-events-none" />
-            </div>
-
-            {/* dots */}
-            <div className="flex justify-center gap-3 m-3">
-              {images.map((_, i) => (
-                <div
-                  key={i}
-                  className={`w-3 h-3 rounded-full transition-all ${i === index ? "bg-(--primary) scale-125" : "bg-(--text-muted)/40"}`}
-                />
-              ))}
-            </div>
-          </div>
+          <MediaCarousel slides={heroSlides} intervalMs={5200} />
         </motion.div>
       </div>
     </section>

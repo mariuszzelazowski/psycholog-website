@@ -3,9 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --hostname 0.0.0.0 --port 3000",
     "build": "next build",
-    "start": "next start",
+    "start": "next start --hostname 0.0.0.0 --port 3000",
+    "preview": "npm run build && npm run start",
+    "clean": "rm -rf .next",
+    "kill-ports": "lsof -ti:3000,3002,3003,3010 | xargs kill -9 2>/dev/null || true",
+    "fresh": "npm run kill-ports && npm run clean && npm run dev",
+    "deploy:vercel": "vercel --prod",
     "lint": "eslint",
     "format": "prettier --write ."
   },
