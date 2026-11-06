@@ -60,6 +60,11 @@
     touch-action: none;
   }
 
+  .mobile-menu-trigger {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
@@ -610,18 +615,25 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 2.75rem;
+    flex: 0 0 auto;
+    min-width: 0;
     min-height: 2.75rem;
-    padding: 0.5rem;
+    padding: 0.625rem 0.3rem;
     border: 0;
     background: transparent;
     cursor: pointer;
   }
 
+  @media (min-width: 480px) {
+    .carousel-dot-hit {
+      padding-inline: 0.35rem;
+    }
+  }
+
   .carousel-dot {
     display: block;
-    width: 0.5rem;
-    height: 0.5rem;
+    width: 0.4375rem;
+    height: 0.4375rem;
     border-radius: 9999px;
     background: rgb(92 99 112 / 0.35);
     transition:
@@ -632,41 +644,75 @@
 
   .carousel-dot-hit:hover .carousel-dot {
     background: rgb(68 89 111 / 0.55);
-    transform: scale(1.15);
+    transform: scale(1.12);
   }
 
   .carousel-dot-active {
-    width: 1.35rem;
+    width: 1.125rem;
+    height: 0.4375rem;
     background: var(--primary);
   }
 
   .carousel-controls {
-    display: flex;
+    display: grid;
+    grid-template-areas:
+      "dots dots dots"
+      "prev . next";
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
+    column-gap: 0.5rem;
+    row-gap: 0.15rem;
+    padding: 0.45rem 0.25rem 0.6rem;
+  }
+
+  .carousel-dots {
+    grid-area: dots;
+    display: flex;
+    flex-wrap: nowrap;
     justify-content: center;
-    gap: 0.35rem;
-    padding: 0.5rem 0.35rem 0.65rem;
+    align-items: center;
+    gap: clamp(0.2rem, 1.2vw, 0.45rem);
+    width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .carousel-dots::-webkit-scrollbar {
+    display: none;
+  }
+
+  .carousel-arrow-prev {
+    grid-area: prev;
+    justify-self: end;
+  }
+
+  .carousel-arrow-next {
+    grid-area: next;
+    justify-self: start;
+  }
+
+  @media (min-width: 480px) {
+    .carousel-controls {
+      grid-template-areas: "prev dots next";
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      column-gap: 0.65rem;
+      row-gap: 0;
+      padding: 0.55rem 0.35rem 0.7rem;
+    }
+
+    .carousel-arrow-prev,
+    .carousel-arrow-next {
+      justify-self: center;
+    }
   }
 
   @media (min-width: 640px) {
     .carousel-controls {
-      gap: 0.65rem;
       padding: 0.65rem 0.5rem 0.85rem;
-    }
-  }
-
-  .carousel-dots {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 0.25rem;
-    max-width: min(100%, 12rem);
-  }
-
-  @media (min-width: 640px) {
-    .carousel-dots {
-      max-width: min(100%, 16rem);
+      column-gap: 0.85rem;
     }
   }
 

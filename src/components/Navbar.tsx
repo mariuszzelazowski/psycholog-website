@@ -1,6 +1,14 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback, useLayoutEffect } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useLayoutEffect,
+  type PointerEvent as ReactPointerEvent,
+  type MouseEvent as ReactMouseEvent,
+} from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { AppSection, brand, navigation } from "@/config";
@@ -14,23 +22,24 @@ import { scrollToSectionElement } from "@/lib/scroll-to-section";
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [menuTopPx, setMenuTopPx] = useState(0);
+  const [navHeightPx, setNavHeightPx] = useState(0);
   const [canPortal, setCanPortal] = useState(false);
   const [menuMounted, setMenuMounted] = useState(false);
   const pendingScrollRef = useRef<AppSection | null>(null);
-  const headerRowRef = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLElement>(null);
   const scrollLockActiveRef = useRef(false);
+  const menuTouchToggleRef = useRef(false);
   const prefersReducedMotion = useReducedMotion();
 
   const baseItem =
     "cursor-pointer relative min-h-12 px-4 py-3 rounded-2xl text-sm tracking-wide font-medium transition-all duration-300 backdrop-blur-md border shadow-sm hover:shadow-md hover:-translate-y-0.5 active:scale-[0.98] touch-manipulation";
 
-  const measureMenuTop = useCallback(() => {
-    const row = headerRowRef.current;
-    if (!row) {
+  const measureNavHeight = useCallback(() => {
+    const nav = navRef.current;
+    if (!nav) {
       return;
     }
-    setMenuTopPx(row.getBoundingClientRect().bottom);
+    setNavHeightPx(nav.getBoundingClientRect().height);
   }, []);
 
   const runPendingScroll = useCallback(() => {
@@ -54,10 +63,10 @@ export default function Navbar() {
   }, []);
 
   const openMenu = useCallback(() => {
-    measureMenuTop();
+    measureNavHeight();
     setMenuMounted(true);
     setIsOpen(true);
-  }, [measureMenuTop]);
+  }, [measureNavHeight]);
 
   const scrollToSection = (section: AppSection) => {
     if (isOpen) {
@@ -70,18 +79,48 @@ export default function Navbar() {
     scrollToSectionElement(section, behavior);
   };
 
-  const toggleMenu = () => {
+  const toggleMenu = useCallback(() => {
     if (isOpen) {
       closeMenu();
       return;
     }
     openMenu();
+  }, [closeMenu, isOpen, openMenu]);
+
+  const handleMenuButtonPointerUp = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (event.pointerType !== "touch") {
+      return;
+    }
+    event.preventDefault();
+    event.stopPropagation();
+    menuTouchToggleRef.current = true;
+    toggleMenu();
+  };
+
+  const handleMenuButtonClick = (event: ReactMouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    if (menuTouchToggleRef.current) {
+      menuTouchToggleRef.current = false;
+      return;
+    }
+    toggleMenu();
   };
 
   useEffect(() => {
     setCanPortal(true);
     resetBodyScrollLock();
   }, []);
+
+  useLayoutEffect(() => {
+    measureNavHeight();
+    const nav = navRef.current;
+    if (!nav || typeof ResizeObserver === "undefined") {
+      return;
+    }
+    const observer = new ResizeObserver(measureNavHeight);
+    observer.observe(nav);
+    return () => observer.disconnect();
+  }, [measureNavHeight]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -92,15 +131,6 @@ export default function Navbar() {
 
   useLayoutEffect(() => {
     if (!isOpen) {
-      return;
-    }
-    measureMenuTop();
-    window.addEventListener("resize", measureMenuTop, { passive: true });
-    return () => window.removeEventListener("resize", measureMenuTop);
-  }, [isOpen, scrolled, measureMenuTop]);
-
-  useEffect(() => {
-    if (!isOpen) {
       if (scrollLockActiveRef.current) {
         unlockBodyScroll();
         scrollLockActiveRef.current = false;
@@ -108,19 +138,17 @@ export default function Navbar() {
       return;
     }
 
-    const lockId = requestAnimationFrame(() => {
-      lockBodyScroll();
-      scrollLockActiveRef.current = true;
-    });
+    measureNavHeight();
+    lockBodyScroll();
+    scrollLockActiveRef.current = true;
 
     return () => {
-      cancelAnimationFrame(lockId);
       if (scrollLockActiveRef.current) {
         unlockBodyScroll();
         scrollLockActiveRef.current = false;
       }
     };
-  }, [isOpen]);
+  }, [isOpen, measureNavHeight]);
 
   useEffect(() => {
     return () => {
@@ -138,17 +166,18 @@ export default function Navbar() {
         resetBodyScrollLock();
         scrollLockActiveRef.current = false;
       }
+      measureNavHeight();
     };
     window.addEventListener("resize", onResize, { passive: true });
     return () => window.removeEventListener("resize", onResize);
-  }, []);
+  }, [measureNavHeight]);
 
   useEffect(() => {
     if (!isOpen) {
       return;
     }
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
+      if (event.key === "escape") {
         closeMenu();
       }
     };
@@ -183,13 +212,14 @@ export default function Navbar() {
                   id="mobile-nav"
                   role="dialog"
                   aria-modal="true"
+                  data-scroll-lock-ignore
                   initial={{ opacity: 0, y: -8 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
                   transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
                   style={{
-                    top: menuTopPx,
-                    maxHeight: `calc(100dvh - ${menuTopPx}px - env(safe-area-inset-bottom, 0px))`,
+                    top: navHeightPx,
+                    maxHeight: `calc(100dvh - ${navHeightPx}px - env(safe-area-inset-bottom, 0px))`,
                   }}
                   className="mobile-nav-panel fixed inset-x-0 z-[60] lg:hidden border-t border-accent/30 bg-bg-soft/98 backdrop-blur-xl shadow-lg"
                 >
@@ -220,20 +250,18 @@ export default function Navbar() {
   return (
     <>
       <motion.nav
+        ref={navRef}
         id="navbar"
         initial={prefersReducedMotion ? false : { y: -16, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-        className={`sticky top-0 z-50 border-b transition-all duration-300 pt-[env(safe-area-inset-top,0px)] ${
+        className={`fixed top-0 inset-x-0 z-50 border-b transition-all duration-300 pt-[env(safe-area-inset-top,0px)] lg:relative lg:inset-auto lg:sticky lg:top-0 ${
           scrolled
             ? "bg-bg-soft/90 backdrop-blur-xl border-accent/35 shadow-sm"
             : "bg-bg-soft/75 backdrop-blur-lg border-accent/20"
         }`}
       >
-        <div
-          ref={headerRowRef}
-          className="container-custom flex justify-between items-center gap-3 sm:gap-4 py-3 sm:py-4 lg:py-5"
-        >
+        <div className="container-custom flex justify-between items-center gap-3 sm:gap-4 py-3 sm:py-4 lg:py-5">
           <button
             type="button"
             onClick={() => scrollToSection(AppSection.Hero)}
@@ -267,8 +295,9 @@ export default function Navbar() {
           <div className="lg:hidden shrink-0">
             <button
               type="button"
-              onClick={toggleMenu}
-              className="w-11 h-11 min-w-11 flex items-center justify-center rounded-xl border border-accent/35 bg-bg-soft/80 text-xl text-text touch-manipulation cursor-pointer"
+              onClick={handleMenuButtonClick}
+              onPointerUp={handleMenuButtonPointerUp}
+              className="mobile-menu-trigger w-11 h-11 min-w-11 flex items-center justify-center rounded-xl border border-accent/35 bg-bg-soft/80 text-xl text-text touch-manipulation cursor-pointer"
               aria-expanded={isOpen}
               aria-controls="mobile-nav"
               aria-haspopup="dialog"
@@ -279,6 +308,13 @@ export default function Navbar() {
           </div>
         </div>
       </motion.nav>
+
+      <div
+        className="lg:hidden shrink-0 pointer-events-none"
+        style={{ height: navHeightPx > 0 ? navHeightPx : undefined }}
+        aria-hidden
+      />
+
       {mobileMenu}
     </>
   );

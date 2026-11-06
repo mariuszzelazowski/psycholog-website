@@ -98,15 +98,6 @@ export default function MediaCarousel({
 
       {slides.length > 1 && (
         <div className="carousel-controls z-20 relative">
-          <button
-            type="button"
-            onClick={() => goTo(index - 1)}
-            aria-label="Poprzednie zdjęcie"
-            className="carousel-arrow touch-manipulation"
-          >
-            <CarouselChevron direction="prev" />
-          </button>
-
           <div className="carousel-dots" role="tablist" aria-label="Slajdy galerii">
             {slides.map((item, i) => (
               <button
@@ -127,9 +118,18 @@ export default function MediaCarousel({
 
           <button
             type="button"
+            onClick={() => goTo(index - 1)}
+            aria-label="Poprzednie zdjęcie"
+            className="carousel-arrow carousel-arrow-prev touch-manipulation"
+          >
+            <CarouselChevron direction="prev" />
+          </button>
+
+          <button
+            type="button"
             onClick={() => goTo(index + 1)}
             aria-label="Następne zdjęcie"
-            className="carousel-arrow touch-manipulation"
+            className="carousel-arrow carousel-arrow-next touch-manipulation"
           >
             <CarouselChevron direction="next" />
           </button>
