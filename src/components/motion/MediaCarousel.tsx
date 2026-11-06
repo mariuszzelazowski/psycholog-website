@@ -9,7 +9,7 @@ type MediaCarouselProps = {
   slides: readonly GallerySlide[];
   intervalMs?: number;
   frameClassName?: string;
-  /** Nadpisanie proporcji ramki (np. Hero szerszy, mniej agresywne przycinanie portretów). */
+  /** Proporcje ramki dla karuzeli zawierającej zdjęcia — stałe dla wszystkich slajdów, żeby ramka nie skakała. */
   photoFrameClassName?: string;
 };
 
@@ -76,7 +76,8 @@ export default function MediaCarousel({
     ? { objectPosition: slide.photoObjectPosition ?? "center center" }
     : undefined;
 
-  const frameClasses = isPhoto && photoFrameClassName
+  const hasPhotos = slides.some((item) => item.isPhoto);
+  const frameClasses = hasPhotos && photoFrameClassName
     ? photoFrameClassName
     : frameClassName;
 
