@@ -253,7 +253,10 @@ export default function Navbar() {
         initial={prefersReducedMotion ? false : { y: -16, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-        className={`fixed top-0 inset-x-0 z-[100] border-b transition-all duration-300 pt-[env(safe-area-inset-top,0px)] lg:relative lg:z-50 lg:inset-auto lg:sticky lg:top-0 ${
+        className={`fixed top-0 inset-x-0 border-b transition-all duration-300 pt-[env(safe-area-inset-top,0px)] lg:relative lg:z-50 lg:inset-auto lg:sticky lg:top-0 ${
+          /** Nad backdropem menu (z-110), żeby syntetyczny click po touchend nie trafiał w backdrop i nie zamykał od razu (Android/Samsung). */
+          isOpen ? "z-[125]" : "z-[100]"
+        } ${
           scrolled
             ? "bg-bg-soft/90 backdrop-blur-xl border-accent/35 shadow-sm"
             : "bg-bg-soft/75 backdrop-blur-lg border-accent/20"
