@@ -16,7 +16,7 @@ export default function Hero() {
       <div className="ambient-orb ambient-orb-a pointer-events-none" aria-hidden />
       <div className="ambient-orb ambient-orb-b pointer-events-none" aria-hidden />
 
-      <div className="container-custom relative grid gap-8 md:grid-cols-2 md:gap-10 lg:gap-12 xl:gap-14 items-center max-w-6xl mx-auto">
+      <div className="container-custom relative grid gap-6 sm:gap-8 md:grid-cols-2 md:gap-10 lg:gap-12 xl:gap-14 items-center max-w-6xl mx-auto">
         <motion.div
           initial="hidden"
           animate="visible"
@@ -79,7 +79,7 @@ export default function Hero() {
             slides={heroSlides}
             intervalMs={5200}
             priority
-            photoFrameClassName="aspect-[3/4] sm:aspect-[5/6] min-h-[240px] max-h-[min(72vh,540px)] sm:max-h-none sm:min-h-0"
+            photoFrameClassName="hero-media-frame"
           />
         </motion.div>
       </div>

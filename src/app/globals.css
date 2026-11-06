@@ -28,18 +28,19 @@
   --surface: rgb(255 255 255 / 0.82);
   --ring: rgb(68 89 111 / 0.45);
   --shadow-tint: rgb(47 61 78 / 0.14);
-  --header-offset: 6.75rem;
+  /* Wartości startowe ≈ wysokość paska; po hydratacji Navbar nadpisuje je zmierzoną wysokością. */
+  --header-offset: calc(4rem + env(safe-area-inset-top, 0px));
 }
 
 @media (min-width: 640px) {
   :root {
-    --header-offset: 6.25rem;
+    --header-offset: calc(4.85rem + env(safe-area-inset-top, 0px));
   }
 }
 
 @media (min-width: 1024px) {
   :root {
-    --header-offset: 5.25rem;
+    --header-offset: 6.45rem;
   }
 }
 
@@ -201,6 +202,31 @@
     .section-padding-hero {
       padding-top: 2.15rem;
       padding-bottom: 4rem;
+    }
+  }
+
+  /*
+   * Ramka karuzeli w Hero. W układzie jednokolumnowym (< md) wysokość jest ograniczona tak,
+   * żeby pod karuzelą zmieścił się nadtytuł i cały nagłówek H1 na pierwszym ekranie.
+   * 17rem ≈ padding Hero + ramka karty + kropki/strzałki + odstęp + nadtytuł i H1 (3 wiersze).
+   */
+  .hero-media-frame {
+    aspect-ratio: 3 / 4;
+    min-height: 15rem;
+    max-height: max(15rem, calc(100vh - var(--header-offset) - 17rem));
+    max-height: max(15rem, calc(100svh - var(--header-offset) - 17rem));
+  }
+
+  @media (min-width: 640px) {
+    .hero-media-frame {
+      aspect-ratio: 5 / 6;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .hero-media-frame {
+      min-height: 0;
+      max-height: none;
     }
   }
 
@@ -640,7 +666,7 @@
     flex: 0 0 auto;
     min-width: 0;
     min-height: 2.75rem;
-    padding: 0.625rem 0.3rem;
+    padding: 0.625rem 0.25rem;
     border: 0;
     background: transparent;
     cursor: pointer;
@@ -677,14 +703,11 @@
 
   .carousel-controls {
     display: grid;
-    grid-template-areas:
-      "dots dots dots"
-      "prev . next";
-    grid-template-columns: 1fr auto 1fr;
+    grid-template-areas: "prev dots next";
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     column-gap: 0.5rem;
-    row-gap: 0.15rem;
-    padding: 0.45rem 0.25rem 0.6rem;
+    padding: 0.4rem 0.25rem 0.5rem;
   }
 
   .carousel-dots {
@@ -708,26 +731,16 @@
 
   .carousel-arrow-prev {
     grid-area: prev;
-    justify-self: end;
   }
 
   .carousel-arrow-next {
     grid-area: next;
-    justify-self: start;
   }
 
   @media (min-width: 480px) {
     .carousel-controls {
-      grid-template-areas: "prev dots next";
-      grid-template-columns: auto minmax(0, 1fr) auto;
       column-gap: 0.65rem;
-      row-gap: 0;
       padding: 0.55rem 0.35rem 0.7rem;
-    }
-
-    .carousel-arrow-prev,
-    .carousel-arrow-next {
-      justify-self: center;
     }
   }
 

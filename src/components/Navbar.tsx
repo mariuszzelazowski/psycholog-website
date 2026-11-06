@@ -15,7 +15,10 @@ import {
   unlockBodyScroll,
   resetBodyScrollLock,
 } from "@/lib/scroll-lock";
-import { scrollToSectionElement } from "@/lib/scroll-to-section";
+import {
+  scrollToSectionElement,
+  syncHeaderOffsetVar,
+} from "@/lib/scroll-to-section";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,6 +40,7 @@ export default function Navbar() {
       return;
     }
     setNavHeightPx(nav.getBoundingClientRect().height);
+    syncHeaderOffsetVar();
   }, []);
 
   const runPendingScroll = useCallback(() => {
@@ -83,6 +87,41 @@ export default function Navbar() {
     }
     openMenu();
   }, [closeMenu, isOpen, openMenu]);
+
+  /**
+   * iOS Safari potrafi połknąć pierwszy `click` (tap zatrzymujący bezwładny scroll, heurystyki hover),
+   * mimo że `touchend` dochodzi. `preventDefault` blokuje syntetyczny click, więc nie ma podwójnego toggle.
+   */
+  const triggerTouchStartRef = useRef<{ x: number; y: number } | null>(null);
+
+  const handleTriggerTouchStart = (event: React.TouchEvent<HTMLButtonElement>) => {
+    const touch = event.touches[0];
+    triggerTouchStartRef.current =
+      event.touches.length === 1 && touch
+        ? { x: touch.clientX, y: touch.clientY }
+        : null;
+  };
+
+  const handleTriggerTouchEnd = (event: React.TouchEvent<HTMLButtonElement>) => {
+    const start = triggerTouchStartRef.current;
+    triggerTouchStartRef.current = null;
+    const touch = event.changedTouches[0];
+    if (!start || !touch) {
+      return;
+    }
+    const moved = Math.hypot(touch.clientX - start.x, touch.clientY - start.y);
+    const rect = event.currentTarget.getBoundingClientRect();
+    const inside =
+      touch.clientX >= rect.left &&
+      touch.clientX <= rect.right &&
+      touch.clientY >= rect.top &&
+      touch.clientY <= rect.bottom;
+    if (moved > 10 || !inside) {
+      return;
+    }
+    event.preventDefault();
+    toggleMenu();
+  };
 
   useEffect(() => {
     setCanPortal(true);
@@ -155,7 +194,7 @@ export default function Navbar() {
       return;
     }
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "escape") {
+      if (event.key === "Escape") {
         closeMenu();
       }
     };
@@ -277,6 +316,11 @@ export default function Navbar() {
             <button
               type="button"
               onClick={toggleMenu}
+              onTouchStart={handleTriggerTouchStart}
+              onTouchEnd={handleTriggerTouchEnd}
+              onTouchCancel={() => {
+                triggerTouchStartRef.current = null;
+              }}
               className="mobile-menu-trigger relative z-[101] w-11 h-11 min-w-11 flex items-center justify-center rounded-xl border border-accent/35 bg-bg-soft/80 text-xl text-text touch-manipulation cursor-pointer"
               aria-expanded={isOpen}
               aria-controls="mobile-nav"
