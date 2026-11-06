@@ -14,22 +14,17 @@ function readScrollY() {
   );
 }
 
-/** iOS Safari — `position: fixed` na body po scrollu często blokuje UI i psuje sticky. */
+/** Tylko iOS Safari — `position: fixed` na body po scrollu psuje sticky i tapy; Android/Samsung używa `fixed` (stabilniejsze). */
 export function prefersSoftScrollLock() {
   if (typeof window === "undefined") {
     return false;
   }
 
   const ua = window.navigator.userAgent;
-  const ios =
+  return (
     /iPad|iPhone|iPod/.test(ua) ||
-    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-
-  if (ios) {
-    return true;
-  }
-
-  return window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1)
+  );
 }
 
 function touchMoveShouldAllow(target: EventTarget | null) {

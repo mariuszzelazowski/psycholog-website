@@ -6,7 +6,7 @@ import {
   useRef,
   useCallback,
   useLayoutEffect,
-  type PointerEvent as ReactPointerEvent,
+  type TouchEvent as ReactTouchEvent,
   type MouseEvent as ReactMouseEvent,
 } from "react";
 import { createPortal } from "react-dom";
@@ -28,7 +28,8 @@ export default function Navbar() {
   const pendingScrollRef = useRef<AppSection | null>(null);
   const navRef = useRef<HTMLElement>(null);
   const scrollLockActiveRef = useRef(false);
-  const menuTouchToggleRef = useRef(false);
+  /** Po touchend symulowany click jest pomijany — działa na iOS, Android (Samsung), bez preventDefault na pointerze. */
+  const suppressMenuClickRef = useRef(false);
   const prefersReducedMotion = useReducedMotion();
 
   const baseItem =
@@ -87,20 +88,17 @@ export default function Navbar() {
     openMenu();
   }, [closeMenu, isOpen, openMenu]);
 
-  const handleMenuButtonPointerUp = (event: ReactPointerEvent<HTMLButtonElement>) => {
-    if (event.pointerType !== "touch") {
+  const handleMenuButtonTouchEnd = (event: ReactTouchEvent<HTMLButtonElement>) => {
+    if (event.changedTouches.length !== 1) {
       return;
     }
-    event.preventDefault();
-    event.stopPropagation();
-    menuTouchToggleRef.current = true;
+    suppressMenuClickRef.current = true;
     toggleMenu();
   };
 
   const handleMenuButtonClick = (event: ReactMouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    if (menuTouchToggleRef.current) {
-      menuTouchToggleRef.current = false;
+    if (suppressMenuClickRef.current) {
+      suppressMenuClickRef.current = false;
       return;
     }
     toggleMenu();
@@ -203,7 +201,7 @@ export default function Navbar() {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.2 }}
-                  className="mobile-menu-backdrop fixed inset-0 z-[55] lg:hidden cursor-pointer border-0 p-0"
+                  className="mobile-menu-backdrop fixed inset-0 z-[110] lg:hidden cursor-pointer border-0 p-0"
                   aria-label="Zamknij menu"
                   onClick={closeMenu}
                 />
@@ -221,7 +219,7 @@ export default function Navbar() {
                     top: navHeightPx,
                     maxHeight: `calc(100dvh - ${navHeightPx}px - env(safe-area-inset-bottom, 0px))`,
                   }}
-                  className="mobile-nav-panel fixed inset-x-0 z-[60] lg:hidden border-t border-accent/30 bg-bg-soft/98 backdrop-blur-xl shadow-lg"
+                  className="mobile-nav-panel fixed inset-x-0 z-[120] lg:hidden border-t border-accent/30 bg-bg-soft/98 backdrop-blur-xl shadow-lg"
                 >
                   <div className="container-custom flex flex-col items-stretch gap-2 py-3 pb-[max(1rem,env(safe-area-inset-bottom))]">
                     {navigation.map((link) => (
@@ -255,7 +253,7 @@ export default function Navbar() {
         initial={prefersReducedMotion ? false : { y: -16, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-        className={`fixed top-0 inset-x-0 z-50 border-b transition-all duration-300 pt-[env(safe-area-inset-top,0px)] lg:relative lg:inset-auto lg:sticky lg:top-0 ${
+        className={`fixed top-0 inset-x-0 z-[100] border-b transition-all duration-300 pt-[env(safe-area-inset-top,0px)] lg:relative lg:z-50 lg:inset-auto lg:sticky lg:top-0 ${
           scrolled
             ? "bg-bg-soft/90 backdrop-blur-xl border-accent/35 shadow-sm"
             : "bg-bg-soft/75 backdrop-blur-lg border-accent/20"
@@ -296,8 +294,8 @@ export default function Navbar() {
             <button
               type="button"
               onClick={handleMenuButtonClick}
-              onPointerUp={handleMenuButtonPointerUp}
-              className="mobile-menu-trigger w-11 h-11 min-w-11 flex items-center justify-center rounded-xl border border-accent/35 bg-bg-soft/80 text-xl text-text touch-manipulation cursor-pointer"
+              onTouchEnd={handleMenuButtonTouchEnd}
+              className="mobile-menu-trigger relative z-[101] w-11 h-11 min-w-11 flex items-center justify-center rounded-xl border border-accent/35 bg-bg-soft/80 text-xl text-text touch-manipulation cursor-pointer"
               aria-expanded={isOpen}
               aria-controls="mobile-nav"
               aria-haspopup="dialog"
