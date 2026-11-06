@@ -6,8 +6,6 @@ import {
   useRef,
   useCallback,
   useLayoutEffect,
-  type TouchEvent as ReactTouchEvent,
-  type MouseEvent as ReactMouseEvent,
 } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
@@ -28,10 +26,6 @@ export default function Navbar() {
   const pendingScrollRef = useRef<AppSection | null>(null);
   const navRef = useRef<HTMLElement>(null);
   const scrollLockActiveRef = useRef(false);
-  /** Po touchend symulowany click jest pomijany — działa na iOS, Android (Samsung), bez preventDefault na pointerze. */
-  const suppressMenuClickRef = useRef(false);
-  /** DevTools mobile emulation: po touchend bywa brak syntetycznego click — wtedy reset flagi, żeby mysz działała. */
-  const suppressMenuClickTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prefersReducedMotion = useReducedMotion();
 
   const baseItem =
@@ -90,33 +84,6 @@ export default function Navbar() {
     openMenu();
   }, [closeMenu, isOpen, openMenu]);
 
-  const handleMenuButtonTouchEnd = (event: ReactTouchEvent<HTMLButtonElement>) => {
-    if (event.changedTouches.length !== 1) {
-      return;
-    }
-    if (suppressMenuClickTimeoutRef.current) {
-      clearTimeout(suppressMenuClickTimeoutRef.current);
-    }
-    suppressMenuClickRef.current = true;
-    toggleMenu();
-    suppressMenuClickTimeoutRef.current = setTimeout(() => {
-      suppressMenuClickTimeoutRef.current = null;
-      suppressMenuClickRef.current = false;
-    }, 450);
-  };
-
-  const handleMenuButtonClick = (event: ReactMouseEvent<HTMLButtonElement>) => {
-    if (suppressMenuClickRef.current) {
-      suppressMenuClickRef.current = false;
-      if (suppressMenuClickTimeoutRef.current) {
-        clearTimeout(suppressMenuClickTimeoutRef.current);
-        suppressMenuClickTimeoutRef.current = null;
-      }
-      return;
-    }
-    toggleMenu();
-  };
-
   useEffect(() => {
     setCanPortal(true);
     resetBodyScrollLock();
@@ -163,9 +130,6 @@ export default function Navbar() {
 
   useEffect(() => {
     return () => {
-      if (suppressMenuClickTimeoutRef.current) {
-        clearTimeout(suppressMenuClickTimeoutRef.current);
-      }
       resetBodyScrollLock();
       scrollLockActiveRef.current = false;
     };
@@ -312,8 +276,7 @@ export default function Navbar() {
           <div className="lg:hidden shrink-0">
             <button
               type="button"
-              onClick={handleMenuButtonClick}
-              onTouchEnd={handleMenuButtonTouchEnd}
+              onClick={toggleMenu}
               className="mobile-menu-trigger relative z-[101] w-11 h-11 min-w-11 flex items-center justify-center rounded-xl border border-accent/35 bg-bg-soft/80 text-xl text-text touch-manipulation cursor-pointer"
               aria-expanded={isOpen}
               aria-controls="mobile-nav"
