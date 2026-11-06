@@ -64,6 +64,24 @@ Wypchnij aktualny kod na `origin` (repo `psycholog-website`).
 
 ---
 
+## Google — żeby strona pojawiła się w wyszukiwarce
+
+1. [Google Search Console](https://search.google.com/search-console) → **Dodaj usługę** → **Prefiks URL** → adres strony.
+2. Metoda **Tag HTML** → skopiuj samą wartość `content="…"`.
+3. Vercel → Environment Variables (Production): `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` = ta wartość → Redeploy → **Zweryfikuj**.
+4. Search Console → **Mapy witryn** → wpisz `sitemap.xml` → Prześlij.
+5. Search Console → **Sprawdzanie adresu URL** → strona główna → **Poproś o zindeksowanie**.
+
+Lokalne wyniki („psycholog Warszawa” na mapie) zależą głównie od **Profilu Firmy w Google** —
+[business.google.com](https://business.google.com), kategoria „Psycholog”, link do strony, zdjęcia gabinetu, prośby o opinie.
+
+Podgląd linku (Facebook/Messenger) sprawdzisz w [Sharing Debuggerze](https://developers.facebook.com/tools/debug/),
+dane strukturalne — w [Rich Results Test](https://search.google.com/test/rich-results).
+
+Podglądy Vercela (preview) mają automatycznie `noindex`, indeksowana jest tylko produkcja.
+
+---
+
 ## Domena własna (później, opcjonalnie)
 
 Vercel → Project → **Settings → Domains**.  
@@ -79,3 +97,5 @@ Potem ustaw `NEXT_PUBLIC_SITE_URL=https://twoja-domena.pl` i redeploy.
 - [ ] `NEXT_PUBLIC_SITE_URL` + redeploy
 - [ ] Formularz na telefonie (bez otwierania poczty)
 - [ ] `/sitemap.xml` działa
+- [ ] Search Console: weryfikacja + sitemap + prośba o indeksowanie
+- [ ] Profil Firmy w Google z linkiem do strony

@@ -7,7 +7,7 @@ import {
   resourcesSection,
 } from "@/config";
 import SectionHeader from "@/components/motion/SectionHeader";
-import RichCopy from "@/lib/rich-copy";
+import RichCopy, { bindOrphans } from "@/lib/rich-copy";
 import { motionTransition, scaleIn, viewportReveal } from "@/lib/motion";
 
 export default function Resources() {
@@ -20,30 +20,32 @@ export default function Resources() {
       <div className="ambient-orb ambient-orb-b pointer-events-none" aria-hidden />
 
       <div className="container-custom relative section-stack">
-        <SectionHeader
-          label={resourcesSection.sectionLabel}
-          title={resourcesSection.title}
-          titleId="resources-heading"
-        />
+        <div className="space-y-3">
+          <SectionHeader
+            label={resourcesSection.sectionLabel}
+            title={resourcesSection.title}
+            titleId="resources-heading"
+          />
 
-        <motion.p
-          initial="hidden"
-          whileInView="visible"
-          viewport={viewportReveal}
-          variants={{
-            hidden: { opacity: 0, y: 20 },
-            visible: {
-              opacity: 1,
-              y: 0,
-              transition: motionTransition,
-            },
-          }}
-          className="section-lead text-center max-w-2xl mx-auto"
-        >
-          <RichCopy>{resourcesSection.lead}</RichCopy>
-        </motion.p>
+          <motion.p
+            initial="hidden"
+            whileInView="visible"
+            viewport={viewportReveal}
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: motionTransition,
+              },
+            }}
+            className="section-lead"
+          >
+            <RichCopy>{resourcesSection.lead}</RichCopy>
+          </motion.p>
+        </div>
 
-        <div className="content-narrow w-full max-w-xl mx-auto pt-2">
+        <div className="content-narrow w-full max-w-xl mx-auto">
           <motion.article
             initial="hidden"
             whileInView="visible"
@@ -68,11 +70,11 @@ export default function Resources() {
                 {resourcesGift.badge}
               </span>
 
-              <h4 className="font-display text-2xl sm:text-[1.65rem] font-semibold text-primary-dark text-balance">
-                {resourcesGift.title}
-              </h4>
+              <h3 className="font-display text-2xl sm:text-[1.65rem] font-semibold text-primary-dark text-balance">
+                {bindOrphans(resourcesGift.title)}
+              </h3>
 
-              <p className="prose-block text-[0.9375rem] md:text-base max-w-md mx-auto">
+              <p className="prose-block prose-block-center text-[0.9375rem] md:text-base max-w-md">
                 <RichCopy>{resourcesGift.description}</RichCopy>
               </p>
             </div>
@@ -90,7 +92,7 @@ export default function Resources() {
               </motion.a>
             </div>
 
-            <p className="text-[0.7rem] text-text-muted/90 font-medium leading-snug">
+            <p className="text-xs text-text-muted/90 font-medium leading-snug">
               Link otwiera plik w nowej karcie (Google&nbsp;Drive).
             </p>
           </motion.article>

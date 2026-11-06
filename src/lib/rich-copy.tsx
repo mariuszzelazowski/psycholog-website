@@ -7,7 +7,15 @@ import type { ReactNode } from "react";
 const TOKEN =
   /(\[\[[^\]]+\]\]|\*\*[^*]+\*\*)/g;
 
-export function parseRichCopy(text: string): ReactNode[] {
+/** Jednoliterowe spójniki i przyimki („w”, „z”, „i”…) nie mogą zostawać na końcu wiersza. */
+const ORPHAN = /(?<=^|[\s(„])([aiouwzAIOUWZ])\s+/g;
+
+export function bindOrphans(text: string): string {
+  return text.replace(ORPHAN, "$1\u00A0");
+}
+
+export function parseRichCopy(input: string): ReactNode[] {
+  const text = bindOrphans(input);
   const nodes: ReactNode[] = [];
   let lastIndex = 0;
   let tokenIndex = 0;

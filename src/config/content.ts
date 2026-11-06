@@ -19,21 +19,33 @@ export const brand = {
 
 /** SEO (layout, Open Graph, sitemap) */
 export const seo = {
-  title: "Psycholog, Hipnoterapia, Warszawa | Terapia Online",
+  /** ~60 znaków — tyle Google pokazuje w wynikach. */
+  title: "Psycholog Warszawa i hipnoterapia online | Paulina Misztal",
+  /** ~155 znaków — opis pod tytułem w wynikach wyszukiwania. */
   description:
-    "Psycholog, hipnoterapia, konsultacje online. Bezpieczna przestrzeń do rozmowy i realnej zmiany.",
+    "Paulina Misztal — psycholog i certyfikowana hipnoterapeutka. Konsultacje psychologiczne i sesje hipnoterapii w gabinecie w Warszawie lub online.",
+  /** Krótszy opis do podglądu linku (Facebook, Messenger, WhatsApp). */
+  shareDescription:
+    "Konsultacje psychologiczne i hipnoterapia — gabinet w Warszawie lub online. Bezpieczna przestrzeń do rozmowy i realnej zmiany.",
   locale: "pl_PL",
+  /** Psychoterapia celowo pominięta — tytuł psychoterapeuty dopiero po ukończeniu szkoły. */
   keywords: [
     "psycholog Warszawa",
     "hipnoterapia Warszawa",
-    "psychoterapia",
+    "hipnoterapeuta Warszawa",
     "konsultacje psychologiczne",
-    "terapia online",
     "psycholog online",
+    "hipnoterapia online",
+    "terapia poznawczo-behawioralna",
     "CBT",
-    "hipnoza",
+    "TSR",
+    "DDA",
+    "wypalenie zawodowe",
+    "lęki",
     brand.fullName,
   ],
+  /** Zdjęcie używane w danych strukturalnych i podglądzie linku. */
+  portrait: "/images/photos/about-portret-fotel.jpg",
 } as const;
 
 /**
@@ -123,7 +135,7 @@ export const navigation = [
 
 /** Sekcja hero */
 export const hero = {
-  eyebrow: "Gabinet · Online",
+  eyebrow: "Psycholog · Warszawa · Online",
   title: "Konsultacje psychologiczne",
   titleAccent: "Sesje hipnoterapii",
   lead:

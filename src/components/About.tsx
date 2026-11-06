@@ -6,7 +6,7 @@ import MediaCarousel from "@/components/motion/MediaCarousel";
 import Reveal from "@/components/motion/Reveal";
 import SectionHeader from "@/components/motion/SectionHeader";
 import AccentMarker from "@/components/ui/AccentMarker";
-import RichCopy from "@/lib/rich-copy";
+import RichCopy, { bindOrphans } from "@/lib/rich-copy";
 import {
   fadeUp,
   slideFromLeft,
@@ -31,7 +31,7 @@ export default function About() {
           titleId="about-heading"
         />
 
-        <div className="content-grid w-full grid grid-cols-1 lg:grid-cols-2 lg:gap-10 xl:gap-12 lg:items-start">
+        <div className="content-grid w-full grid grid-cols-1 gap-8 sm:gap-10 lg:grid-cols-2 xl:gap-12 lg:items-start">
           <Reveal
             variants={slideFromLeft}
             className="mx-auto w-full max-w-sm lg:max-w-none lg:mx-0 lg:sticky lg:top-[calc(var(--header-offset)+1rem)]"
@@ -44,8 +44,8 @@ export default function About() {
             />
           </Reveal>
 
-          <Reveal variants={slideFromRight} className="space-y-5 lg:space-y-6 text-center lg:text-left">
-            <div className="prose-block prose-block-center-lg-left space-y-3">
+          <Reveal variants={slideFromRight} className="space-y-6 text-center lg:text-left">
+            <div className="prose-block prose-block-center-lg-left space-y-4">
               <p>
                 Nazywam się{" "}
                 <span className="font-bold text-primary-dark">{brand.fullName}</span>
@@ -63,10 +63,10 @@ export default function About() {
               transition={{ type: "spring", stiffness: 320, damping: 22 }}
               className="card-glass card-interactive card-padding card-callout space-y-3"
             >
-              <h4 className="font-display text-lg md:text-xl font-semibold text-primary text-balance">
-                {about.experienceTitle}
-              </h4>
-              <div className="prose-block prose-block-center-lg-left space-y-2.5 text-[0.9375rem] md:text-base">
+              <h3 className="font-display text-lg md:text-xl font-semibold text-primary text-balance">
+                {bindOrphans(about.experienceTitle)}
+              </h3>
+              <div className="prose-block prose-block-center-lg-left space-y-3 text-[0.9375rem] md:text-base">
                 {about.experienceParagraphs.map((paragraph) => (
                   <p key={paragraph.slice(0, 24)}>
                     <RichCopy>{paragraph}</RichCopy>
@@ -77,10 +77,10 @@ export default function About() {
           </Reveal>
         </div>
 
-        <Reveal variants={fadeUp} className="content-narrow w-full space-y-4 lg:space-y-5 pt-2 lg:pt-4">
-          <h4 className="font-display text-xl md:text-2xl font-semibold text-primary text-center text-balance">
-            {about.challengesTitle}
-          </h4>
+        <Reveal variants={fadeUp} className="content-narrow w-full space-y-5 pt-2 lg:pt-4">
+          <h3 className="font-display text-xl md:text-2xl font-semibold text-primary text-center text-balance">
+            {bindOrphans(about.challengesTitle)}
+          </h3>
 
           <motion.ul
             initial="hidden"

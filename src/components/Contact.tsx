@@ -110,7 +110,7 @@ export default function Contact() {
             className="card-glass card-interactive card-padding contact-info-card flex flex-col gap-4"
           >
             <div>
-              <p className="text-[0.625rem] uppercase font-semibold tracking-[0.16em] text-accent mb-2">
+              <p className="text-[0.6875rem] uppercase font-semibold tracking-[0.16em] text-accent mb-2">
                 {contactSection.socialHeading}
               </p>
               <div className="contact-social-row flex flex-wrap gap-2">
@@ -134,10 +134,10 @@ export default function Contact() {
               </div>
             </div>
 
-            <dl className="space-y-3">
+            <dl className="space-y-3.5">
               {contactDetails.map((item) => (
                 <div key={item.id}>
-                  <dt className="text-[0.625rem] uppercase font-semibold tracking-[0.16em] text-accent mb-0.5">
+                  <dt className="text-[0.6875rem] uppercase font-semibold tracking-[0.16em] text-accent mb-1">
                     {item.label}
                   </dt>
                   <dd className="text-text text-[0.9375rem] md:text-base break-words [overflow-wrap:anywhere]">

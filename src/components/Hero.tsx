@@ -78,6 +78,7 @@ export default function Hero() {
           <MediaCarousel
             slides={heroSlides}
             intervalMs={5200}
+            priority
             photoFrameClassName="aspect-[3/4] sm:aspect-[5/6] min-h-[240px] max-h-[min(72vh,540px)] sm:max-h-none sm:min-h-0"
           />
         </motion.div>

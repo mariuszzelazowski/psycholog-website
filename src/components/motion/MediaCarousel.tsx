@@ -11,6 +11,8 @@ type MediaCarouselProps = {
   frameClassName?: string;
   /** Proporcje ramki dla karuzeli zawierającej zdjęcia — stałe dla wszystkich slajdów, żeby ramka nie skakała. */
   photoFrameClassName?: string;
+  /** Karuzela nad zgięciem strony — pierwszy slajd ładowany od razu (LCP). */
+  priority?: boolean;
 };
 
 function CarouselChevron({ direction }: { direction: "prev" | "next" }) {
@@ -39,6 +41,7 @@ export default function MediaCarousel({
   intervalMs = 5200,
   frameClassName = "aspect-[4/5] min-h-[240px] max-h-[min(72vh,520px)] sm:max-h-none sm:min-h-0",
   photoFrameClassName,
+  priority = false,
 }: MediaCarouselProps) {
   const [index, setIndex] = useState(0);
   const slide = slides[index];
@@ -98,6 +101,8 @@ export default function MediaCarousel({
             <img
               src={slide.src}
               alt={slide.alt}
+              loading={priority ? "eager" : "lazy"}
+              fetchPriority={priority && index === 0 ? "high" : "auto"}
               decoding="async"
               draggable={false}
               style={photoStyle}

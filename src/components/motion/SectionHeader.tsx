@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { fadeUp, viewportReveal } from "@/lib/motion";
+import { bindOrphans } from "@/lib/rich-copy";
 
 type SectionHeaderProps = {
   label: string;
@@ -15,7 +16,7 @@ export default function SectionHeader({
   label,
   title,
   titleId,
-  headingLevel = "h3",
+  headingLevel = "h2",
   className = "",
 }: SectionHeaderProps) {
   const titleClassName =
@@ -39,11 +40,11 @@ export default function SectionHeader({
       </motion.p>
       {headingLevel === "h2" ? (
         <motion.h2 id={titleId} variants={fadeUp} className={titleClassName}>
-          {title}
+          {bindOrphans(title)}
         </motion.h2>
       ) : (
         <motion.h3 id={titleId} variants={fadeUp} className={titleClassName}>
-          {title}
+          {bindOrphans(title)}
         </motion.h3>
       )}
       <motion.div

@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { AppSection, services, servicesSection } from "@/config";
 import SectionHeader from "@/components/motion/SectionHeader";
-import RichCopy from "@/lib/rich-copy";
+import RichCopy, { bindOrphans } from "@/lib/rich-copy";
 import { motionTransition, scaleIn } from "@/lib/motion";
 
 export default function Services() {
@@ -34,16 +34,16 @@ export default function Services() {
               whileHover={{ y: -4 }}
               className="group card-glass card-interactive card-padding flex flex-col h-full text-center lg:text-left"
             >
-              <div className="space-y-3 flex-1">
-                <h4 className="font-display text-balance text-lg md:text-xl font-semibold tracking-tight text-text transition-colors duration-300 group-hover:text-primary-dark lg:max-w-none mx-auto lg:mx-0 max-w-[22rem]">
-                  {service.title}
-                </h4>
+              <div className="space-y-3.5 flex-1">
+                <h3 className="font-display text-balance text-lg md:text-xl font-semibold tracking-tight text-text transition-colors duration-300 group-hover:text-primary-dark lg:max-w-none mx-auto lg:mx-0 max-w-[22rem]">
+                  {bindOrphans(service.title)}
+                </h3>
 
                 <div className="flex flex-wrap gap-1.5 justify-center lg:justify-start">
                   {service.delivery.map((mode) => (
                     <span
                       key={mode}
-                      className="text-[0.625rem] uppercase tracking-[0.14em] font-semibold px-3 py-1 rounded-full border border-accent/40 text-primary-dark bg-bg-soft/80"
+                      className="text-[0.6875rem] uppercase tracking-[0.14em] font-semibold px-3 py-1 rounded-full border border-accent/40 text-primary-dark bg-bg-soft/80"
                     >
                       {mode}
                     </span>

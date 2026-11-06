@@ -4,7 +4,10 @@ function normalizeOrigin(url: string) {
   return url.replace(/\/$/, "");
 }
 
-/** Kanoniczny adres strony — w dev zawsze lokalny host (bez pętli przekierowań). */
+/**
+ * Kanoniczny adres strony — w dev zawsze lokalny host (bez pętli przekierowań).
+ * `VERCEL_URL` to adres konkretnego wdrożenia (zmienia się co deploy), więc jest ostatnią deską ratunku.
+ */
 export function getSiteUrl() {
   const fromEnv = process.env.NEXT_PUBLIC_SITE_URL?.trim();
 
@@ -16,11 +19,21 @@ export function getSiteUrl() {
     return normalizeOrigin(fromEnv);
   }
 
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+  }
+
   if (process.env.VERCEL_URL) {
     return `https://${process.env.VERCEL_URL}`;
   }
 
   return DEFAULT_DEV_ORIGIN;
+}
+
+/** Podglądy Vercela (preview) nie mogą trafić do Google jako duplikaty strony. */
+export function isIndexable() {
+  const vercelEnv = process.env.VERCEL_ENV;
+  return !vercelEnv || vercelEnv === "production";
 }
 
 /** metadataBase tylko gdy mamy sensowny adres produkcyjny. */
