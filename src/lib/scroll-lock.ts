@@ -2,9 +2,18 @@
 let lockCount = 0;
 let savedScrollY = 0;
 
+function readScrollY() {
+  return (
+    window.scrollY ||
+    document.documentElement.scrollTop ||
+    document.body.scrollTop ||
+    0
+  );
+}
+
 function applyLock() {
-  savedScrollY = window.scrollY;
-  const { body, documentElement } = document;
+  savedScrollY = readScrollY();
+  const { body } = document;
 
   body.dataset.scrollLocked = "true";
   body.style.position = "fixed";
@@ -13,11 +22,10 @@ function applyLock() {
   body.style.right = "0";
   body.style.width = "100%";
   body.style.overflow = "hidden";
-  documentElement.style.overflow = "hidden";
 }
 
 function applyUnlock() {
-  const { body, documentElement } = document;
+  const { body } = document;
   const scrollY = savedScrollY;
 
   body.style.position = "";
@@ -26,7 +34,6 @@ function applyUnlock() {
   body.style.right = "";
   body.style.width = "";
   body.style.overflow = "";
-  documentElement.style.overflow = "";
   delete body.dataset.scrollLocked;
 
   window.scrollTo(0, scrollY);

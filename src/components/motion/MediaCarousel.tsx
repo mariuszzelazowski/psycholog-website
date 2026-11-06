@@ -11,6 +11,27 @@ type MediaCarouselProps = {
   frameClassName?: string;
 };
 
+function CarouselChevron({ direction }: { direction: "prev" | "next" }) {
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden
+      className={direction === "prev" ? "mr-0.5" : "ml-0.5"}
+    >
+      <path
+        d={direction === "prev" ? "M15 6l-6 6 6 6" : "M9 6l6 6-6 6"}
+        stroke="currentColor"
+        strokeWidth="2.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export default function MediaCarousel({
   slides,
   intervalMs = 5200,
@@ -73,45 +94,45 @@ export default function MediaCarousel({
             </blockquote>
           </motion.figure>
         </AnimatePresence>
-
-        {slides.length > 1 && (
-          <div className="absolute top-[38%] sm:top-1/2 -translate-y-1/2 left-0 right-0 flex justify-between px-1 sm:px-2 z-30 pointer-events-none">
-            <button
-              type="button"
-              onClick={() => goTo(index - 1)}
-              aria-label="Poprzednie zdjęcie"
-              className="carousel-arrow pointer-events-auto touch-manipulation"
-            >
-              ◀
-            </button>
-            <button
-              type="button"
-              onClick={() => goTo(index + 1)}
-              aria-label="Następne zdjęcie"
-              className="carousel-arrow pointer-events-auto touch-manipulation"
-            >
-              ▶
-            </button>
-          </div>
-        )}
       </div>
 
       {slides.length > 1 && (
-        <div className="flex justify-center flex-wrap gap-1 py-2 sm:py-3 z-20 relative">
-          {slides.map((item, i) => (
-            <button
-              type="button"
-              key={item.id}
-              onClick={() => goTo(i)}
-              aria-label={`${item.alt}. ${item.motto}`}
-              aria-current={i === index}
-              className="carousel-dot-hit touch-manipulation"
-            >
-              <span
-                className={`carousel-dot ${i === index ? "carousel-dot-active" : ""}`}
-              />
-            </button>
-          ))}
+        <div className="carousel-controls z-20 relative">
+          <button
+            type="button"
+            onClick={() => goTo(index - 1)}
+            aria-label="Poprzednie zdjęcie"
+            className="carousel-arrow touch-manipulation"
+          >
+            <CarouselChevron direction="prev" />
+          </button>
+
+          <div className="carousel-dots" role="tablist" aria-label="Slajdy galerii">
+            {slides.map((item, i) => (
+              <button
+                type="button"
+                key={item.id}
+                role="tab"
+                onClick={() => goTo(i)}
+                aria-label={item.alt}
+                aria-selected={i === index}
+                className="carousel-dot-hit touch-manipulation"
+              >
+                <span
+                  className={`carousel-dot ${i === index ? "carousel-dot-active" : ""}`}
+                />
+              </button>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => goTo(index + 1)}
+            aria-label="Następne zdjęcie"
+            className="carousel-arrow touch-manipulation"
+          >
+            <CarouselChevron direction="next" />
+          </button>
         </div>
       )}
     </div>

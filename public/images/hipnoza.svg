@@ -8,5 +8,4 @@
     <circle r="24" fill="#44596f"/>
   </g>
   <path d="M200 780 Q400 680 600 780" fill="none" stroke="#b8956a" stroke-width="2" opacity="0.4"/>
-  <text x="400" y="920" text-anchor="middle" font-family="Georgia, serif" font-size="28" fill="#2f3d4e" opacity="0.75">Hipnoterapia</text>
 </svg>

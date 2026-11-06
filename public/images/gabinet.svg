@@ -7,5 +7,4 @@
   <path d="M520 320 L600 320 M560 280 L560 360" stroke="#44596f" stroke-width="3" opacity="0.35"/>
   <rect x="200" y="280" width="120" height="8" rx="4" fill="#d4c4ad"/>
   <rect x="200" y="310" width="200" height="8" rx="4" fill="#d4c4ad" opacity="0.7"/>
-  <text x="400" y="920" text-anchor="middle" font-family="Georgia, serif" font-size="28" fill="#44596f" opacity="0.7">Gabinet</text>
 </svg>
